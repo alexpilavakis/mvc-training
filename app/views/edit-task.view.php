@@ -1,0 +1,94 @@
+<?php require "partials/head.php" ?>
+
+<?php require "partials/nav.php" ?>
+
+
+    <main class="container" style="padding-top: 50px">
+        <h4 class="mb-3">Edit Task</h4>
+            <?php if (($task->description)== NULL) :?>
+                <form METHOD="post" class="form-inline">
+                    <div class="row">
+                        <div class="form-group col-md-6 mb-3">
+                            <label for="task">Tasks</label>
+                            <select name="task" class="custom-select d-block w-100" id="task" required>
+                                <option value="">Choose...</option>
+                                <?php foreach ($tasks as $task) : ?>
+                                    <option><?= $task->id.' '.$task->description ?></option>
+                                <?php endforeach;?>
+                            </select>
+                            <div class="invalid-feedback">
+                                Please select a valid Task.
+                            </div>
+                        </div>
+                        <div class="form-group col-md-6 mb-3" style="padding-top: 25px;">
+                            <button name="submit" class="btn btn-primary"  type="submit">Edit Task</button>
+                            <input type="hidden" name="username" id="inputName" value="<?=$username?>">
+                            <input type="hidden" name="password" value="<?=$password?>">
+                        </div>
+                    </div>
+                </form>
+
+                <?php if(isset($_POST['edit-task']) and ($message == true)) :?>
+                    <div class="alert alert-success" role="alert">
+                        <?="Edit Succesful "?>
+                    </div>
+
+                <?php endif; ?>
+
+            <?php endif;?>
+        <?php
+        if (($task->description)!= NULL) :?>
+            <?php if(isset($_POST['submit'])) :?>
+                <form METHOD="post">
+                    <div class="form-row justify-content-md-start">
+                        <div class="form-group col-md-3">
+                            <label for="inputDescription">Description</label>
+                            <input type="hidden" name="id" id="inputId" value="<?=$task->id?>">
+                            <input type="text" name="description" id="inputDescription" value="<?=$task->description?>">
+                        </div>
+                        <div class="form-group col-md-3">
+                            <label for="inputCompleted">Completed</label>
+                            <?php if ($task->completed == 1): ?>
+                                <select name="completed" id="inputState" class="form-control">
+                                    <option value="1" selected>Completed</option>
+                                    <option value="0">Work in Progress</option>
+                                </select>
+                            <?php else:?>
+                                <select name="completed" id="inputCompleted" class="form-control">
+                                    <option value="0" selected>Work in Progress</option>
+                                    <option value="1">Completed</option>
+                                </select>
+                            <?php endif; ?>
+                        </div>
+                        <div class="form-group mb-3">
+                            <label for="assigned">Assigned</label>
+                            <select name="assigned" class="custom-select d-block w-100" id="assigned" required>
+                                <option value="">Choose...</option>
+                                <?php foreach ($users as $user) : ?>
+                                    <?php if($user->name == $task->assigned) :?>
+                                        <option selected><?= $user->id.' '.$user->name ?></option>
+                                    <?php else:?>
+                                        <option><?= $user->id.' '.$user->name ?></option>
+                                    <?php endif ?>
+                                <?php endforeach;?>
+                                <option value=''>Not Assigned</option>
+                            </select>
+                            <div class="invalid-feedback">
+                                Please select a valid user.
+                            </div>
+                        </div>
+                        </div>
+
+
+                    </div>
+                    <button name="edit-task" class="btn btn-primary"  type="submit">Edit Task</button>
+                    <input type="hidden" name="username" id="inputName" value="<?=$username?>">
+                    <input type="hidden" name="password" value="<?=$password?>">
+
+                </form>
+            <?php endif; ?>
+        <?php endif;?>
+
+    </main>
+
+<?php require "partials/footer.php";
