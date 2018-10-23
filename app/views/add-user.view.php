@@ -24,7 +24,7 @@
                     </div>
                     <div class="form-group col-md-3 mb-3">
                         <label for="userPassword">Password</label>
-                        <input type="text" class="form-control" name="userPassword" id="userPassword" placeholder="" value="" required>
+                        <input type="password" class="form-control" name="userPassword" id="userPassword" placeholder="" value="" required>
                         <div class="invalid-feedback">
                             Valid password is required.
                         </div>
@@ -40,8 +40,8 @@
 
 
                 <?php
-                if (($_POST['name'])!= NULL) :?>
-                    <?php if(isset($_POST['submit']) and ($message == true)) :?>
+                if (($_POST['name'])!= null) :?>
+                    <?php if (isset($_POST['submit']) and ($message == true)) :?>
                         <div class="alert alert-success" role="alert">
                             <?="You have added ".$_POST['name'] ?>
                         </div>
