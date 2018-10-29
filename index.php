@@ -2,11 +2,11 @@
 /**
  * Created by PhpStorm.
  * User: alex
- * Date: 15/10/2018
- * Time: 4:57 ΜΜ
+ * Date: 22/10/2018
+ * Time: 2:32 ΜΜ
  */
 
-use core\{Router, Request};
+use MVCTraining\core\{Router, Request};
 
 require "vendor/autoload.php";
 require "core/bootstrap.php";

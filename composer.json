@@ -1,9 +1,8 @@
 {
-
   "autoload": {
-      "classmap": [
-        "./"
-      ]
-  }
 
+    "classmap": [
+      "./"
+    ]
+  }
 }

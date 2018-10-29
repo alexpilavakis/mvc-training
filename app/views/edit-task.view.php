@@ -5,45 +5,41 @@
 
     <main class="container" style="padding-top: 50px">
         <h4 class="mb-3">Edit Task</h4>
-            <?php if (($task->description)== NULL) :?>
-                <form METHOD="post" class="form-inline">
-                    <div class="row">
-                        <div class="form-group col-md-6 mb-3">
-                            <label for="task">Tasks</label>
-                            <select name="task" class="custom-select d-block w-100" id="task" required>
-                                <option value="">Choose...</option>
-                                <?php foreach ($tasks as $task) : ?>
-                                    <option><?= $task->id.' '.$task->description ?></option>
-                                <?php endforeach;?>
-                            </select>
-                            <div class="invalid-feedback">
-                                Please select a valid Task.
-                            </div>
-                        </div>
-                        <div class="form-group col-md-6 mb-3" style="padding-top: 25px;">
-                            <button name="submit" class="btn btn-primary"  type="submit">Edit Task</button>
-                            <input type="hidden" name="username" id="inputName" value="<?=$username?>">
-                            <input type="hidden" name="password" value="<?=$password?>">
+        <?php if (($tasks)!= NULL) :?>
+            <form METHOD="post" class="form-inline">
+                <div class="row">
+                    <div class="form-group col-md-6 mb-3">
+                        <label for="task">Tasks</label>
+                        <select name="task" class="custom-select d-block w-100" id="task" required>
+                            <option value="">Choose...</option>
+                            <?php foreach ($tasks as $task) : ?>
+                                <option value="<?= $task->task_id?>"><?= $task->task_id.' '.$task->description ?></option>
+                            <?php endforeach;?>
+                        </select>
+                        <div class="invalid-feedback">
+                            Please select a valid Task.
                         </div>
                     </div>
-                </form>
-
-                <?php if(isset($_POST['edit-task']) and ($message == true)) :?>
-                    <div class="alert alert-success" role="alert">
-                        <?="Edit Succesful "?>
+                    <div class="form-group col-md-6 mb-3" style="padding-top: 25px;">
+                        <button name="submit" class="btn btn-primary"  type="submit">Edit Task</button>
                     </div>
+                </div>
+            </form>
 
-                <?php endif; ?>
+            <?php if(isset($_POST['edit-task']) and ($message == true)) :?>
+                <div class="alert alert-success" role="alert">
+                    <?="Edit Succesful "?>
+                </div>
 
-            <?php endif;?>
-        <?php
-        if (($task->description)!= NULL) :?>
+            <?php endif; ?>
+
+        <?php endif;?>
             <?php if(isset($_POST['submit'])) :?>
                 <form METHOD="post">
                     <div class="form-row justify-content-md-start">
                         <div class="form-group col-md-3">
                             <label for="inputDescription">Description</label>
-                            <input type="hidden" name="id" id="inputId" value="<?=$task->id?>">
+                            <input type="hidden" name="id" id="inputId" value="<?=$task->task_id?>">
                             <input type="text" name="description" id="inputDescription" value="<?=$task->description?>">
                         </div>
                         <div class="form-group col-md-3">
@@ -65,10 +61,10 @@
                             <select name="assigned" class="custom-select d-block w-100" id="assigned" required>
                                 <option value="">Choose...</option>
                                 <?php foreach ($users as $user) : ?>
-                                    <?php if($user->name == $task->assigned) :?>
-                                        <option selected><?= $user->id.' '.$user->name ?></option>
+                                    <?php if($user->user_id == $task->user_id) :?>
+                                        <option value="<?= $user->user_id?>" selected><?= $user->user_id.' '.$user->name ?></option>
                                     <?php else:?>
-                                        <option><?= $user->id.' '.$user->name ?></option>
+                                        <option value="<?= $user->user_id?>"><?= $user->user_id.' '.$user->name ?></option>
                                     <?php endif ?>
                                 <?php endforeach;?>
                                 <option value=''>Not Assigned</option>
@@ -77,17 +73,10 @@
                                 Please select a valid user.
                             </div>
                         </div>
-                        </div>
-
-
                     </div>
                     <button name="edit-task" class="btn btn-primary"  type="submit">Edit Task</button>
-                    <input type="hidden" name="username" id="inputName" value="<?=$username?>">
-                    <input type="hidden" name="password" value="<?=$password?>">
-
                 </form>
             <?php endif; ?>
-        <?php endif;?>
 
     </main>
 

@@ -1,23 +1,39 @@
 <?php
+/**
+ * Created by PhpStorm.
+ * User: alex
+ * Date: 22/10/2018
+ * Time: 4:10 ΜΜ
+ */
 
-namespace app\models;
+namespace MVCTraining\app\models;
 
-use core\Container;
+use MVCTraining\core\Container;
 
 class User
 {
-    public static function validateUser($name, $password)
+    public static function all()
+    {
+        $users = Container::get('database')->selectAll('users');
+        return $users;
+    }
+
+    public static function find($user_id)
+    {
+        return Container::get('database')->search('users', 'user_id', compact('user_id'));
+    }
+
+    public static function validate($name, $password)
     {
         if (!empty($valid_users = Container::get('database')->search('users', 'name', compact('name')))) {
             foreach ($valid_users as $user) {
                 if ($user->password == $password) {
-                    return true;
+                    return $user->name;
                 }
             }
         }
-        return false;
+        return null;
     }
-
     public static function check($name)
     {
         $users = Container::get('database')->selectAll('users');
@@ -39,5 +55,17 @@ class User
         Container::get('database')->insert('users', $parameters);
 
         return true;
+    }
+    public static function edit ($action)
+    {
+        Container::get('database')->update('users', ['name'=> $action['name'], 'user_id' => $action['id']] );
+        Container::get('database')->update('users', ['email'=> $action['email'], 'user_id' => $action['id']] );
+        Container::get('database')->update('users', ['password'=> $action['pass'], 'user_id' => $action['id']] );
+    }
+    public static function delete ($id)
+    {
+        $user = User::find($id);
+        $name = $user[0]->name;
+        Container::get('database')->delete('users', compact('name'));
     }
 }

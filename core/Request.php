@@ -2,11 +2,11 @@
 /**
  * Created by PhpStorm.
  * User: alex
- * Date: 15/10/2018
- * Time: 4:59 ΜΜ
+ * Date: 22/10/2018
+ * Time: 2:31 ΜΜ
  */
 
-namespace core;
+namespace MVCTraining\core;
 
 class Request
 {
