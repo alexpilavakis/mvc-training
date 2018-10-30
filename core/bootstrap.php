@@ -8,8 +8,9 @@
 
 
 use MVCTraining\core\Container;
+use MVCTraining\app\models\User;
 
-
+session_start();
 Container::bind('config', require "config.php");
 
 Container::bind('database',new QueryBuilder(

@@ -13,6 +13,7 @@ class UserController
 {
     public function add()
     {
+        User::isLoggedin();
         if(isset($_POST['submit'])) {
             if (User::check($_POST['name']) == false) {
                 $message = false;
@@ -25,6 +26,7 @@ class UserController
     }
     public function edit($data = [])
     {
+        User::isLoggedin();
         $message = false;
         if (isset($_POST['submit'])) {
             if(empty($data)) {
@@ -46,6 +48,7 @@ class UserController
     }
     public function delete($data = [])
     {
+        User::isLoggedin();
         Task::update($data);
         User::delete($data);
         $users = User::all();

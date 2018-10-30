@@ -16,10 +16,15 @@
 
             <li class="nav-item active">
 
-                <form method="POST" id="theForm" action="/store">
+                <form method="GET" id="theForm" action="/store">
                     <a class="nav-link" href="javascript:DoPost('theForm')">Home <span class="sr-only">(current)</span></a>
                 </form>
 
+            </li>
+            <li class="nav-item">
+                <form method="GET" id="about" action="/about">
+                    <a class="nav-link" href="javascript:DoPost('about')">About</a>
+                </form>
             </li>
             <li class="nav-item">
 
@@ -46,6 +51,11 @@
             <li class="nav-item">
                 <form method="POST" id="edituser" action="/User/edit">
                     <a class="nav-link" href="javascript:DoPost('edituser')">Edit User</a>
+                </form>
+            </li>
+            <li class="nav-item">
+                <form method="GET" id="logout" action="/logout">
+                    <a class="nav-link" href="javascript:DoPost('logout')">Logout</a>
                 </form>
             </li>
         </ul>

@@ -12,7 +12,7 @@
                     <select name="task" class="custom-select d-block w-100" id="task" required>
                         <option value="">Choose...</option>
                         <?php foreach ($tasks as $task) : ?>
-                            <option><?= $task->description ?></option>
+                            <option value="<?= $task->description ?>"><?= $task->description ?></option>
                         <?php endforeach;?>
                     </select>
                     <div class="invalid-feedback">
@@ -24,7 +24,7 @@
                     <select name="user" class="custom-select d-block w-100" id="task" required>
                         <option value="">Choose...</option>
                         <?php foreach ($users as $user) : ?>
-                            <option><?= $user->user_id.' '.$user->name ?></option>
+                            <option value="<?= $user->user_id?>"><?= $user->user_id.' '.$user->name ?></option>
                         <?php endforeach;?>
                     </select>
                     <div class="invalid-feedback">

@@ -23,7 +23,7 @@ class User
         return Container::get('database')->search('users', 'user_id', compact('user_id'));
     }
 
-    public static function validate($name, $password)
+    public static function validUser($name, $password)
     {
         if (!empty($valid_users = Container::get('database')->search('users', 'name', compact('name')))) {
             foreach ($valid_users as $user) {
@@ -68,4 +68,29 @@ class User
         $name = $user[0]->name;
         Container::get('database')->delete('users', compact('name'));
     }
+    public static function isLoggedin()
+    {
+        if ( isset( $_SESSION['user_id'] ) ) {
+            // Grab user data from the database using the username
+            // Let them access the "logged in only" pages
+        } else {
+            // Redirect them to the login page
+            redirect('');
+        }
+
+    }
+
+    public static function validate()
+    {
+        $username = User::validUser($_GET['username'], $_GET['password']);
+        if ($username == null)
+        {
+            return false;
+        }
+        else{
+            $_SESSION['user_id'] = $username;
+        }
+        return true;
+    }
+
 }

@@ -45,23 +45,27 @@ class Router
             $action = $parse[1];
             $parameters = $parse [2];
             $uri = $action;
-        }else
+        }
+        else
         {
             $parse =  explode('@',$this->routes[$Methodtype][$uri]);
             $controller = $parse [0];
             $action = $parse [1];
             $parameters = null;
         }
-        try{
+        try
+        {
             if (array_key_exists($uri,$this->routes[$Methodtype]))
             {
                 return $this->callAction($controller, $action, $parameters);
             }
+            else{
+                redirect('');
+            }
         }catch (Exception $e){
-
+                session_destroy();
+            die("Page $uri not found");
         }
-        die("Page $uri not found". $e);
-
     }
 
     protected function callAction($controller, $action, $parameters)

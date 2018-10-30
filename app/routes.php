@@ -7,7 +7,9 @@
  */
 
 $router->get('', 'PagesController@home');
-$router->post('store', 'PagesController@store');
+$router->get('store', 'PagesController@store');
+$router->get('about', 'PagesController@about');
+$router->get('logout', 'PagesController@logout');
 
 $router->post('assign-task', 'TaskController@assign');
 

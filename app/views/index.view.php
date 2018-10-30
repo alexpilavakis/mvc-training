@@ -4,16 +4,15 @@
     <center>
 
     <h1 class="h3 mb-3 font-weight-normal">Training MVC</h1>
-    <form class="form-signin" style="max-width: 330px; justify-content: center" method="post" action="/store">
+    <form class="form-signin" style="max-width: 330px; justify-content: center" method="GET" action="/">
         <label for="inputName" class="sr-only">Username</label>
         <input name="username" id="inputName" class="form-control mb-3" placeholder="Username" required autofocus>
         <label for="inputPassword" class="sr-only">Password</label>
         <input type="password" name="password" id="inputPassword" class="form-control mb-3" placeholder="Password" required>
 
         <button class="btn btn-lg btn-primary btn-block" type="submit">Log in</button>
-        <?php
-        if(!isset($_POST['submit']) and !empty($username)) :?>
-            <div class="alert alert-danger" role="alert">
+        <?php if($message === false) :?>
+            <div style="margin-top: 20px" class="alert alert-danger" role="alert">
                 <?="Wrong Credentials" ?>
             </div>
         <?php endif; ?>

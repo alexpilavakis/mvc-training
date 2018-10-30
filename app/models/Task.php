@@ -38,7 +38,7 @@ class Task
     public static function assign_task($task, $user)
     {
         $parameters = [
-            'user_id' => (int)explode(" ",$user)[0],
+            'user_id' => (int)$user,
             'description' => $task
         ];
         Container::get('database')->update('tasks',$parameters);
@@ -63,7 +63,7 @@ class Task
             $user_id = null;
         }else
         {
-            $user_id = (int)explode(" ",$assigned)[0];
+            $user_id = (int)$assigned;
         }
         $parameters = [
             'description' => $description,

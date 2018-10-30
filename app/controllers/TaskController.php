@@ -14,6 +14,7 @@ class TaskController
 {
     public function assign()
     {
+        User::isLoggedin();
         if(isset($_POST['submit'])){
             Task::assign_task($_POST['task'], $_POST['user']);
         }
@@ -25,6 +26,7 @@ class TaskController
     }
     public function add()
     {
+        User::isLoggedin();
         if(isset($_POST['submit'])) {
             if (Task::check($_POST['description']) == false) {
                 $message = false;

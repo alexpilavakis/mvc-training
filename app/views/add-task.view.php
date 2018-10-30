@@ -21,7 +21,7 @@
                     <select name="assigned" class="custom-select d-block w-100" id="assigned" required>
                         <option value="">Choose...</option>
                         <?php foreach ($users as $user) : ?>
-                            <option><?= $user->user_id.' '.$user->name ?></option>
+                            <option value="<?= $user->user_id?>"><?= $user->user_id.' '.$user->name ?></option>
                         <?php endforeach;?>
                         <option value="0">Not Assigned</option>
                     </select>
