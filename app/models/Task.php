@@ -2,37 +2,46 @@
 /**
  * Created by PhpStorm.
  * User: alex
- * Date: 16/10/2018
- * Time: 2:43 ΜΜ
+ * Date: 22/10/2018
+ * Time: 4:11 ΜΜ
  */
 
-namespace app\models;
-use core\Container;
-use Psr\Log\NullLogger;
+namespace MVCTraining\app\models;
+
+use MVCTraining\core\Container;
 
 class Task
 {
+
+    public static function all()
+    {
+        $tasks = Container::get('database')->selectAll('tasks');
+        return $tasks;
+    }
+
+    public static function find($task_id)
+    {
+        return Container::get('database')->search('tasks', 'task_id', compact('task_id'));
+    }
 
     public static function getUnassigned()
     {
         $tasks = Container::get('database')->selectAll('tasks');
 
         $unassigned = array_filter($tasks, function ($task){
-            return $task->assigned == NULL;
+            return $task->user_id == 0;
         });
 
         return $unassigned;
-
     }
 
     public static function assign_task($task, $user)
     {
         $parameters = [
-            'assigned' => explode(" ",$user)[1],
+            'user_id' => (int)$user,
             'description' => $task
-       ];
+        ];
         Container::get('database')->update('tasks',$parameters);
-
         return true;
     }
 
@@ -50,50 +59,46 @@ class Task
 
     public static function addTask($description, $assigned)
     {
-        if ($assigned == "Not Assigned") {
-            $assigned = Null;
+        if ($assigned == '0') {
+            $user_id = null;
         }else
         {
-            $assigned = explode(" ",$assigned)[1];
+            $user_id = (int)$assigned;
         }
         $parameters = [
             'description' => $description,
             'completed' => 0,
-            'assigned' => $assigned
+            'user_id' => $user_id
         ];
         Container::get('database')->insert('tasks', $parameters);
-
         return true;
     }
 
-    public static function action ($post_values)
-    {
-        $action = preg_grep("/edit/", array_keys($post_values));
-
-        if (!empty($action))
-            self::edit($action);
-        else
-            self::delete(preg_grep("/delete/", array_keys($post_values)));
-    }
-
-
     public static function edit ($action)
     {
-
         if ($action['assigned'] === '') {
             $action['assigned'] = null; // or 'NULL' for SQL
         }
-        Container::get('database')->update('tasks', ['description'=> $action['description'], 'id' => $action['id']] );
-        Container::get('database')->update('tasks', ['completed'=> $action['completed'], 'id' => $action['id']] );
-        Container::get('database')->update('tasks', ['assigned'=> explode(" ",$action['assigned'])[1], 'id' => $action['id']] );
+        Container::get('database')->update('tasks', ['description'=> $action['description'], 'task_id' => $action['id']] );
+        Container::get('database')->update('tasks', ['completed'=> $action['completed'], 'task_id' => $action['id']] );
+        Container::get('database')->update('tasks', ['user_id'=> $action['assigned'], 'task_id' => $action['id']] );
+
     }
 
-    public static function delete ($action)
+    public static function delete ($id)
     {
-        $id = array_values($action)[0];
-        $id = (int) filter_var($id, FILTER_SANITIZE_NUMBER_INT);
-        $task = findtask((int)$id);
+        $task = Task::find($id);
         $description = $task[0]->description;
-        Container::get('database')->delete('tasks',compact('description'));
+        Container::get('database')->delete('tasks', compact('description'));
     }
+
+    public static function update ($user_id)
+    {
+        $assigned_tasks = Container::get('database')->search('tasks', 'user_id', compact('user_id'));
+        foreach ($assigned_tasks as $assigned_task)
+        {
+            Container::get('database')->update('tasks', ['user_id'=> null, 'task_id' => $assigned_task->task_id] );
+        }
+    }
+
 }

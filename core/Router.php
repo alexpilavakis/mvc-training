@@ -2,12 +2,11 @@
 /**
  * Created by PhpStorm.
  * User: alex
- * Date: 15/10/2018
- * Time: 4:59 ΜΜ
+ * Date: 22/10/2018
+ * Time: 2:38 ΜΜ
  */
 
-namespace core;
-
+namespace MVCTraining\core;
 
 class Router
 {
@@ -39,34 +38,49 @@ class Router
 
     public function direct($uri, $Methodtype)
     {
-        //var_dump("hoho");
-        try{
+        $parse = explode('/',$uri);
+        if(count($parse) > 1)
+        {
+            $controller = $parse [0]."Controller";
+            $action = $parse[1];
+            $parameters = $parse [2];
+            $uri = $action;
+        }
+        else
+        {
+            $parse =  explode('@',$this->routes[$Methodtype][$uri]);
+            $controller = $parse [0];
+            $action = $parse [1];
+            $parameters = null;
+        }
+        try
+        {
             if (array_key_exists($uri,$this->routes[$Methodtype]))
             {
-                return $this->callAction(...explode('@',$this->routes[$Methodtype][$uri]));
+                return $this->callAction($controller, $action, $parameters);
+            }
+            else{
+                redirect('');
             }
         }catch (Exception $e){
-
+                session_destroy();
+            die("Page $uri not found");
         }
-        die("Page $uri not found");
-
     }
 
-    protected function callAction($controller, $action)
+    protected function callAction($controller, $action, $parameters)
     {
 
-        $controller = "app\controllers\\{$controller}";
-
+        $controller = "MVCTraining\\app\\controllers\\{$controller}";
 
         $controller = new $controller;
 
-        //die(var_dump($controller));
         if (!method_exists($controller, $action)){
 
             throw Exception ("Controller {$controller} does not respond to {$action}");
         }
+        return $controller->$action($parameters);
 
-        return $controller->$action();
 
 
     }
