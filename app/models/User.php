@@ -10,63 +10,38 @@ namespace MVCTraining\app\models;
 
 use MVCTraining\core\Container;
 
-class User
+class User implements \Member
 {
-    public static function all()
-    {
-        $users = Container::get('database')->selectAll('users');
-        return $users;
-    }
+    public $id;
+    public $name;
+    public $email;
+    public $password;
+    public $role;
 
-    public static function find($user_id)
-    {
-        return Container::get('database')->search('users', 'user_id', compact('user_id'));
-    }
+    const USER = 'user';
+    const ADMINISTRATOR = 'admin';
+    //px meta
+    // const MODERATOR = 3;
+    // const EDITOR = 4;
 
-    public static function validUser($name, $password)
+    public function __construct($id,$name, $email, $password)
     {
-        if (!empty($valid_users = Container::get('database')->search('users', 'name', compact('name')))) {
-            foreach ($valid_users as $user) {
-                if ($user->password == $password) {
-                    return $user->name;
-                }
-            }
+        $this->id= $id;
+        $this->name= $name;
+        $this->email=$email;
+        $this->password=$password;
+        $this->role = self::USER;
+    }
+    public static function checkRole($user_id)
+    {
+        if (empty(Container::get('database')->search('admins', 'user_id', compact('user_id'))))
+        {
+            return self::USER;
         }
-        return null;
-    }
-    public static function check($name)
-    {
-        $users = Container::get('database')->selectAll('users');
-        foreach ($users as $user) {
-            if ($user->name == $name) {
-                return false;
-            }
+        else
+        {
+            return self::ADMINISTRATOR;
         }
-        return true;
-    }
-
-    public static function addUser($name, $email, $password)
-    {
-        $parameters = [
-            'name' => $name,
-            'email' => $email,
-            'password' => $password
-        ];
-        Container::get('database')->insert('users', $parameters);
-
-        return true;
-    }
-    public static function edit ($action)
-    {
-        Container::get('database')->update('users', ['name'=> $action['name'], 'user_id' => $action['id']] );
-        Container::get('database')->update('users', ['email'=> $action['email'], 'user_id' => $action['id']] );
-        Container::get('database')->update('users', ['password'=> $action['pass'], 'user_id' => $action['id']] );
-    }
-    public static function delete ($id)
-    {
-        $user = User::find($id);
-        $name = $user[0]->name;
-        Container::get('database')->delete('users', compact('name'));
     }
     public static function isLoggedin()
     {
@@ -79,18 +54,69 @@ class User
         }
 
     }
-
     public static function validate()
     {
-        $username = User::validUser($_GET['username'], $_GET['password']);
-        if ($username == null)
+        $user_id = User::validUser($_GET['username'], $_GET['password']);
+        if ($user_id == null)
         {
             return false;
         }
         else{
-            $_SESSION['user_id'] = $username;
+            $_SESSION['user_id'] = $user_id;
         }
         return true;
     }
+    private static function validUser($name, $password)
+    {
+        if (!empty($valid_users = Container::get('database')->search('users', 'name', compact('name')))) {
+            foreach ($valid_users as $user) {
+                if ($user->password == $password) {
+                    return $user->user_id;
+                }
+            }
+        }
+        return null;
+    }
+    public static function all()
+    {
+        $users = Container::get('database')->selectAll('users');
+        return $users;
+    }
 
+    public static function find($user_id)
+    {
+        $user = Container::get('database')->search('users', 'user_id', compact('user_id'));
+        return $user[0];
+    }
+    public static function check($name)
+    {
+        $users = Container::get('database')->selectAll('users');
+        foreach ($users as $user) {
+            if ($user->name == $name) {
+                return false;
+            }
+        }
+        return true;
+    }
+    public function getRole()
+    {
+        return $this->role;
+    }
+    public function isAdmin()
+    {
+        return false;
+    }
+    public function getName()
+    {
+        return $this->name;
+    }
+    public function getEmail()
+    {
+        return $this->email;
+    }
+
+    public function getTasks()
+    {
+
+    }
 }

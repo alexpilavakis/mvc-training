@@ -11,8 +11,10 @@
                     <th>Description</th>
                     <th>Completed</th>
                     <th>Assigned</th>
-                    <th>Edit</th>
-                    <th>Delete</th>
+                    <?php if($_SESSION['member']->isAdmin()) : ?>
+                        <th>Edit</th>
+                        <th>Delete</th>
+                    <?php endif; ?>
                 </tr>
                 <tr>
 
@@ -37,12 +39,15 @@
                                 <span class='badge badge-secondary'> Not Assigned </span>
                             <?php endif ?>
                         </td>
-                    <td>
-                        <form method="post" action="/Task/edit/<?= $task->task_id ?>"><button type='submit' name="submit" class='btn btn-outline-primary btn-sm'>Edit</button></form>
-                    </td>
-                    <td>
-                        <form method="post" action="/Task/delete/<?= $task->task_id ?>"><button type='submit' class='btn btn-outline-danger btn-sm'>Delete</button></form>
-                    </td>
+
+                    <?php if($_SESSION['member']->isAdmin()) : ?>
+                        <td>
+                            <form method="post" action="/Task/edit/<?= $task->task_id ?>"><button type='submit' name="submit" class='btn btn-outline-primary btn-sm'>Edit</button></form>
+                        </td>
+                        <td>
+                            <form method="post" action="/Task/delete/<?= $task->task_id ?>"><button type='submit' class='btn btn-outline-danger btn-sm'>Delete</button></form>
+                        </td>
+                    <?php endif;?>
                 </tr>
                     <?php endforeach;  ?>
             </table>
@@ -56,8 +61,10 @@
                     <th>Name</th>
                     <th>Email</th>
                     <th>Password</th>
-                    <th>Edit</th>
-                    <th>Delete</th>
+                    <?php if($_SESSION['member']->isAdmin()) : ?>
+                        <th>Edit</th>
+                        <th>Delete</th>
+                    <?php endif; ?>
                 </tr>
                 <tr>
                     <?php foreach($users as $user) : ?>
@@ -70,15 +77,21 @@
                         <td>
                             <?= $user->email; ?>
                         </td>
-                        <td>
-                            <?= $user->password; ?>
-                        </td>
-                        <td>
-                            <form method="post" action="/User/edit/<?= $user->user_id ?>"><button type='submit' name="submit" class='btn btn-outline-primary btn-sm'>Edit</button></form>
-                        </td>
-                        <td>
-                            <form method="post" action="/User/delete/<?= $user->user_id ?>"><button type='submit' class='btn btn-outline-danger btn-sm'>Delete</button></form>
-                        </td>
+                        <?php if($_SESSION['member']->isAdmin()) : ?>
+                            <td>
+                                <?= $user->password; ?>
+                            </td>
+                            <td>
+                                <form method="post" action="/User/edit/<?= $user->user_id ?>"><button type='submit' name="submit" class='btn btn-outline-primary btn-sm'>Edit</button></form>
+                            </td>
+                            <td>
+                                <form method="post" action="/User/delete/<?= $user->user_id ?>"><button type='submit' class='btn btn-outline-danger btn-sm'>Delete</button></form>
+                            </td>
+                        <?php else :?>
+                            <td>
+                                <i>******</i>
+                            </td>
+                        <?php endif; ?>
                 </tr>
                 <?php endforeach;  ?>
             </table>

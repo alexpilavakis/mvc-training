@@ -14,11 +14,13 @@ class ComposerStaticInitbbe5df99c72638449b31975ec159f844
         'MVCTraining\\app\\controllers\\PagesController' => __DIR__ . '/../..' . '/app/controllers/PagesController.php',
         'MVCTraining\\app\\controllers\\TaskController' => __DIR__ . '/../..' . '/app/controllers/TaskController.php',
         'MVCTraining\\app\\controllers\\UserController' => __DIR__ . '/../..' . '/app/controllers/UserController.php',
+        'MVCTraining\\app\\models\\Admin' => __DIR__ . '/../..' . '/app/models/Admin.php',
         'MVCTraining\\app\\models\\Task' => __DIR__ . '/../..' . '/app/models/Task.php',
         'MVCTraining\\app\\models\\User' => __DIR__ . '/../..' . '/app/models/User.php',
         'MVCTraining\\core\\Container' => __DIR__ . '/../..' . '/core/Container.php',
         'MVCTraining\\core\\Request' => __DIR__ . '/../..' . '/core/Request.php',
         'MVCTraining\\core\\Router' => __DIR__ . '/../..' . '/core/Router.php',
+        'Member' => __DIR__ . '/../..' . '/app/interfaces/Member.php',
         'QueryBuilder' => __DIR__ . '/../..' . '/core/database/QueryBuilder.php',
     );
 

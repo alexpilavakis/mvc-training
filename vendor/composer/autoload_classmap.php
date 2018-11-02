@@ -13,10 +13,12 @@ return array(
     'MVCTraining\\app\\controllers\\PagesController' => $baseDir . '/app/controllers/PagesController.php',
     'MVCTraining\\app\\controllers\\TaskController' => $baseDir . '/app/controllers/TaskController.php',
     'MVCTraining\\app\\controllers\\UserController' => $baseDir . '/app/controllers/UserController.php',
+    'MVCTraining\\app\\models\\Admin' => $baseDir . '/app/models/Admin.php',
     'MVCTraining\\app\\models\\Task' => $baseDir . '/app/models/Task.php',
     'MVCTraining\\app\\models\\User' => $baseDir . '/app/models/User.php',
     'MVCTraining\\core\\Container' => $baseDir . '/core/Container.php',
     'MVCTraining\\core\\Request' => $baseDir . '/core/Request.php',
     'MVCTraining\\core\\Router' => $baseDir . '/core/Router.php',
+    'Member' => $baseDir . '/app/interfaces/Member.php',
     'QueryBuilder' => $baseDir . '/core/database/QueryBuilder.php',
 );

@@ -7,7 +7,7 @@
  */
 
 namespace MVCTraining\app\controllers;
-use MVCTraining\app\models\{Task, User};
+use MVCTraining\app\models\{Admin, Task, User};
 
 class UserController
 {
@@ -19,7 +19,7 @@ class UserController
                 $message = false;
                 return view('add-user', compact('users', 'tasks'), compact('message'));
             }
-            User::addUser($_POST['name'], $_POST['email'],$_POST['userPassword']);
+            Admin::addUser($_POST['name'], $_POST['email'],$_POST['userPassword']);
         }
         $message = true;
         return view('add-user', compact('users', 'tasks'), compact('message'));
@@ -34,12 +34,11 @@ class UserController
             } else {
                 $user = User::find($data);
             }
-            $user = $user[0];
             return view('edit-user', compact('user'));
         }
         if(isset($_POST['edit-user'])){
 
-            User::edit($_POST);
+            Admin::edit($_POST);
             $message = true;
         }
         $users = User::all();
@@ -50,7 +49,7 @@ class UserController
     {
         User::isLoggedin();
         Task::update($data);
-        User::delete($data);
+        Admin::delete($data);
         $users = User::all();
         $tasks = Task::all();
         return view('store', compact('users', 'tasks'));
