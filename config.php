@@ -9,7 +9,7 @@ $array = [
     'database'=> [
         'name'=> 'mytodo',
         'username'=> 'root',
-        'password'=> 'pnd.crZa87',
+        'password'=> 'password',
         'connection'=>'mysql:host=localhost',
         'options'=> [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]
     ]
