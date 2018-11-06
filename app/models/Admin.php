@@ -23,7 +23,7 @@ class Admin extends User
         return true;
     }
 
-    public static function addUser($name, $email, $password)
+    public function addUser($name, $email, $password)
     {
         $parameters = [
             'name' => $name,
@@ -35,13 +35,13 @@ class Admin extends User
         return true;
     }
 
-    public static function edit ($action)
+    public function edit ($action)
     {
         Container::get('database')->update('users', ['name'=> $action['name'], 'user_id' => $action['id']] );
         Container::get('database')->update('users', ['email'=> $action['email'], 'user_id' => $action['id']] );
         Container::get('database')->update('users', ['password'=> $action['pass'], 'user_id' => $action['id']] );
     }
-    public static function delete ($id)
+    public function delete ($id)
     {
         $user = User::find($id);
         $name = $user->name;

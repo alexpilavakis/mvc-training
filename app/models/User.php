@@ -43,6 +43,20 @@ class User implements \Member
             return self::ADMINISTRATOR;
         }
     }
+
+    public static function getUser($user_id)
+    {
+        $user = self::find($user_id);
+        if (User::checkRole($user_id) == 'user')
+        {
+            $user = new User($user->user_id, $user->name, $user->email, $user->password );
+        }
+        else
+        {
+            $user = new Admin($user->user_id, $user->name, $user->email, $user->password );
+        }
+        return $user;
+    }
     public static function isLoggedin()
     {
         if ( isset( $_SESSION['user_id'] ) ) {
@@ -87,8 +101,9 @@ class User implements \Member
     {
         $user = Container::get('database')->search('users', 'user_id', compact('user_id'));
         return $user[0];
+
     }
-    public static function check($name)
+    public function check($name)
     {
         $users = Container::get('database')->selectAll('users');
         foreach ($users as $user) {
@@ -115,8 +130,16 @@ class User implements \Member
         return $this->email;
     }
 
-    public function getTasks()
+    public function edit ($action)
     {
-
+        redirect('store');
+    }
+    public function addUser($name, $email, $password)
+    {
+        redirect('store');
+    }
+    public function delete($id)
+    {
+        redirect('store');
     }
 }

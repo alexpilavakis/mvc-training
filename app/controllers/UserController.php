@@ -14,19 +14,21 @@ class UserController
     public function add()
     {
         User::isLoggedin();
+        $member = User::getUser($_SESSION['user_id']);
         if(isset($_POST['submit'])) {
-            if (User::check($_POST['name']) == false) {
+            if ($member::check($_POST['name']) == false) {
                 $message = false;
-                return view('add-user', compact('users', 'tasks'), compact('message'));
+                return view('add-user', compact('users', 'tasks', 'member'), compact('message'));
             }
-            Admin::addUser($_POST['name'], $_POST['email'],$_POST['userPassword']);
+            $member::addUser($_POST['name'], $_POST['email'],$_POST['userPassword']);
         }
         $message = true;
-        return view('add-user', compact('users', 'tasks'), compact('message'));
+        return view('add-user', compact('users', 'tasks', 'member'), compact('message'));
     }
     public function edit($data = [])
     {
         User::isLoggedin();
+        $member = User::getUser($_SESSION['user_id']);
         $message = false;
         if (isset($_POST['submit'])) {
             if(empty($data)) {
@@ -34,24 +36,25 @@ class UserController
             } else {
                 $user = User::find($data);
             }
-            return view('edit-user', compact('user'));
+            return view('edit-user', compact('user', 'member'));
         }
         if(isset($_POST['edit-user'])){
 
-            Admin::edit($_POST);
+            $member::edit($_POST);
             $message = true;
         }
         $users = User::all();
-        return view('edit-user', compact('users'), compact('message'));
+        return view('edit-user', compact('users', 'member'), compact('message'));
 
     }
     public function delete($data = [])
     {
         User::isLoggedin();
+        $member = User::getUser($_SESSION['user_id']);
         Task::update($data);
-        Admin::delete($data);
+        $member::delete($data);
         $users = User::all();
         $tasks = Task::all();
-        return view('store', compact('users', 'tasks'));
+        return view('store', compact('users', 'tasks', 'member'));
     }
 }

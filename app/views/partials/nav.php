@@ -6,8 +6,8 @@
      </button> -->
     <span class="navbar-toggle">
 
-        <strong><?php echo $_SESSION['member']->getName(); ?></strong>
-        <small><i  style="color: #FFFFFF;">(<?php echo ucfirst($_SESSION['member']->getRole()); ?>)</i></small>
+        <strong><?php echo $member->getName(); ?></strong>
+        <small><i  style="color: #FFFFFF;">(<?php echo ucfirst($member->getRole()); ?>)</i></small>
 
     </span>
     <script type="text/javascript">
@@ -39,7 +39,7 @@
                 </form>
 
             </li>
-            <?php if($_SESSION['member']->isAdmin()) : ?>
+            <?php if($member->isAdmin()) : ?>
                 <li class="nav-item">
                     <form method="POST" id="theForm3" action="/Task/add">
                         <a class="nav-link" href="javascript:DoPost('theForm3')">Add Task</a>

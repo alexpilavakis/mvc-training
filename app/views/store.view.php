@@ -11,7 +11,7 @@
                     <th>Description</th>
                     <th>Completed</th>
                     <th>Assigned</th>
-                    <?php if($_SESSION['member']->isAdmin()) : ?>
+                    <?php if($member->isAdmin()) : ?>
                         <th>Edit</th>
                         <th>Delete</th>
                     <?php endif; ?>
@@ -40,7 +40,7 @@
                             <?php endif ?>
                         </td>
 
-                    <?php if($_SESSION['member']->isAdmin()) : ?>
+                    <?php if($member->isAdmin()) : ?>
                         <td>
                             <form method="post" action="/Task/edit/<?= $task->task_id ?>"><button type='submit' name="submit" class='btn btn-outline-primary btn-sm'>Edit</button></form>
                         </td>
@@ -61,7 +61,7 @@
                     <th>Name</th>
                     <th>Email</th>
                     <th>Password</th>
-                    <?php if($_SESSION['member']->isAdmin()) : ?>
+                    <?php if($member->isAdmin()) : ?>
                         <th>Edit</th>
                         <th>Delete</th>
                     <?php endif; ?>
@@ -77,7 +77,7 @@
                         <td>
                             <?= $user->email; ?>
                         </td>
-                        <?php if($_SESSION['member']->isAdmin()) : ?>
+                        <?php if($member->isAdmin()) : ?>
                             <td>
                                 <?= $user->password; ?>
                             </td>

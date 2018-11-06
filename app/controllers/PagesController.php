@@ -3,8 +3,7 @@
 
 namespace MVCTraining\app\controllers;
 
-use MVCTraining\app\models\{Admin, User, Task};
-use Member;
+use MVCTraining\app\models\{User, Task};
 
 class PagesController
 {
@@ -12,16 +11,6 @@ class PagesController
     {
         if(!empty($_GET)) {
             if (User::validate()){
-                $user = User::find($_SESSION['user_id']);
-                if (User::checkRole($user->user_id) == 'user')
-                {
-                    $member = new User($user->user_id, $user->name, $user->email, $user->password );
-                }
-                else
-                {
-                    $member = new Admin($user->user_id, $user->name, $user->email, $user->password );
-                }
-                $_SESSION['member'] = $member;
                 redirect('store');
             }
             else {
@@ -33,17 +22,17 @@ class PagesController
 
     public function store()
     {
-        //var_dump('Welcome'. $_SESSION['member']->getName(). ' ('. $_SESSION['member']->getRole().')');
         User::isLoggedin();
-       // var_dump($member, 'Rolos '.$member->getRole());
+        $member = User::getUser($_SESSION['user_id']);
         $users = User::all();
         $tasks = Task::all();
-        return view('store', compact('users', 'tasks'));
+        return view('store', compact('users', 'tasks', 'member'));
     }
     public function about()
     {
         User::isLoggedin();
-        return view('about');
+        $member = User::getUser($_SESSION['user_id']);
+        return view('about', compact('member'));
     }
     public function logout()
     {
@@ -51,3 +40,5 @@ class PagesController
         redirect('');
     }
 }
+
+// var_dump($member, 'Rolos '.$member->getRole());

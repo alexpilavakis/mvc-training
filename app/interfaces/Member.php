@@ -9,11 +9,14 @@
 interface Member
 {
     public function isAdmin();
+    public function check($name);
+    public function edit ($action);
+    public function addUser($name, $email, $password);
+    public function delete ($id);
 
     public function getRole();
     public function getName();
     public function getEmail();
-    public function getTasks();
 
 
 }

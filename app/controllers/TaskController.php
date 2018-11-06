@@ -15,6 +15,7 @@ class TaskController
     public function assign()
     {
         User::isLoggedin();
+        $member = User::getUser($_SESSION['user_id']);
         if(isset($_POST['submit'])){
             Task::assign_task($_POST['task'], $_POST['user']);
         }
@@ -22,26 +23,28 @@ class TaskController
         $tasks = Task::getUnassigned();
         $users = User::all();
 
-        return view('assign', compact('tasks', 'users'));
+        return view('assign', compact('tasks', 'users', 'member'));
     }
     public function add()
     {
         User::isLoggedin();
+        $member = User::getUser($_SESSION['user_id']);
         if(isset($_POST['submit'])) {
             if (Task::check($_POST['description']) == false) {
                 $message = false;
-                return view('add-task', compact('users', 'tasks'), compact('message'));
+                return view('add-task', compact('users', 'tasks', 'member'), compact('message'));
             }
             Task::addTask($_POST['description'], $_POST['assigned']);
         }
         $message = true;
         $users = User::all();
         $tasks = Task::all();
-        return view('add-task', compact('users', 'tasks'), compact('message'));
+        return view('add-task', compact('users', 'tasks', 'member'), compact('message'));
     }
     public function edit($data = [])
     {
         $message = false;
+        $member = User::getUser($_SESSION['user_id']);
         if (isset($_POST['submit'])) {
             if(empty($data)) {
                 $task = Task::find($_POST['task']);
@@ -50,7 +53,7 @@ class TaskController
             }
             $task = $task[0];
             $users = User::all();
-            return view('edit-task', compact('task', 'users'));
+            return view('edit-task', compact('task', 'users', 'member'));
         }
         if(isset($_POST['edit-task'])){
 
@@ -58,13 +61,14 @@ class TaskController
             $message = true;
         }
         $tasks = Task::all();
-        return view('edit-task', compact('tasks'), compact('message'));
+        return view('edit-task', compact('tasks', 'member'), compact('message'));
     }
     public function delete($data = [])
     {
+        $member = User::getUser($_SESSION['user_id']);
         Task::delete($data);
         $users = User::all();
         $tasks = Task::all();
-        return view('store', compact('users', 'tasks'));
+        return view('store', compact('users', 'tasks','member'));
     }
 }
