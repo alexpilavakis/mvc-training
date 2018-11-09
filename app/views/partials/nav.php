@@ -1,13 +1,9 @@
 <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
     <a class="navbar-brand" href="#">Training MVC</a>
-    <!-- <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-         <span class="navbar-toggler-icon"></span>
-
-     </button> -->
     <span class="navbar-toggle">
 
-        <strong><?php echo $member->getName(); ?></strong>
-        <small><i  style="color: #FFFFFF;">(<?php echo ucfirst($member->getRole()); ?>)</i></small>
+        <strong><?php echo $loginUser->getName(); ?></strong>
+        <small><i  style="color: #FFFFFF;">(<?php echo ucfirst($loginUser->getRole()); ?>)</i></small>
 
     </span>
     <script type="text/javascript">
@@ -39,7 +35,7 @@
                 </form>
 
             </li>
-            <?php if($member->isAdmin()) : ?>
+            <?php if($loginUser->isAdmin()) : ?>
                 <li class="nav-item">
                     <form method="POST" id="theForm3" action="/Task/add">
                         <a class="nav-link" href="javascript:DoPost('theForm3')">Add Task</a>

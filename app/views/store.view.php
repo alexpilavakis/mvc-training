@@ -2,16 +2,15 @@
 <?php require "app/views/partials/nav.php" ?>
 
 <div class="container">
-
+    <div class="row" id="wrapper">
     <h2 style="padding-top: 20px">Tasks</h2>
-    <div id="wrapper">
             <table class="table table-striped" id="tasks_table">
                 <tr>
                     <th>#</th>
                     <th>Description</th>
                     <th>Completed</th>
                     <th>Assigned</th>
-                    <?php if($member->isAdmin()) : ?>
+                    <?php if($loginUser->isAdmin()) : ?>
                         <th>Edit</th>
                         <th>Delete</th>
                     <?php endif; ?>
@@ -40,7 +39,7 @@
                             <?php endif ?>
                         </td>
 
-                    <?php if($member->isAdmin()) : ?>
+                    <?php if($loginUser->isAdmin()) : ?>
                         <td>
                             <form method="post" action="/Task/edit/<?= $task->task_id ?>"><button type='submit' name="submit" class='btn btn-outline-primary btn-sm'>Edit</button></form>
                         </td>
@@ -52,16 +51,16 @@
                     <?php endforeach;  ?>
             </table>
     </div>
-
+    <div class="row" id="wrapper">
     <h2 style="padding-top: 20px">Users</h2>
-    <div id="wrapper">
             <table class="table table-striped" id="users_table">
                 <tr>
                     <th>#</th>
                     <th>Name</th>
                     <th>Email</th>
                     <th>Password</th>
-                    <?php if($member->isAdmin()) : ?>
+                    <?php if($loginUser->isAdmin()) : ?>
+                        <th>Role</th>
                         <th>Edit</th>
                         <th>Delete</th>
                     <?php endif; ?>
@@ -77,9 +76,18 @@
                         <td>
                             <?= $user->email; ?>
                         </td>
-                        <?php if($member->isAdmin()) : ?>
+                        <?php if($loginUser->isAdmin()) : ?>
                             <td>
                                 <?= $user->password; ?>
+                            </td>
+                            <td>
+                                <?php if($user->role_id == 3) :?>
+                                    Admin
+                                <?php elseif($user->role_id == 2) :?>
+                                    Moderator
+                                <?php elseif($user->role_id == 1) :?>
+                                    User
+                                <?php endif;?>
                             </td>
                             <td>
                                 <form method="post" action="/User/edit/<?= $user->user_id ?>"><button type='submit' name="submit" class='btn btn-outline-primary btn-sm'>Edit</button></form>

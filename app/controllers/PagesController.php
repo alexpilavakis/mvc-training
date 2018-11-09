@@ -22,17 +22,15 @@ class PagesController
 
     public function store()
     {
-        User::isLoggedin();
-        $member = User::getUser($_SESSION['user_id']);
+        $loginUser = User::login_status($_SESSION['user_id']);
         $users = User::all();
         $tasks = Task::all();
-        return view('store', compact('users', 'tasks', 'member'));
+        return view('store', compact('users', 'tasks', 'loginUser'));
     }
     public function about()
     {
-        User::isLoggedin();
-        $member = User::getUser($_SESSION['user_id']);
-        return view('about', compact('member'));
+        $loginUser = User::login_status($_SESSION['user_id']);
+        return view('about', compact('loginUser'));
     }
     public function logout()
     {
@@ -40,5 +38,3 @@ class PagesController
         redirect('');
     }
 }
-
-// var_dump($member, 'Rolos '.$member->getRole());

@@ -9,76 +9,46 @@
 namespace MVCTraining\app\models;
 
 use MVCTraining\core\Container;
+use MVCTraining\app\models\Role;
 
 class User implements \Member
 {
-    public $id;
+    public $user_id;
     public $name;
     public $email;
     public $password;
     public $role;
 
-    const USER = 'user';
-    const ADMINISTRATOR = 'admin';
-    //px meta
-    // const MODERATOR = 3;
-    // const EDITOR = 4;
+    private const USER = 1;
+    private const MODERATOR = 2;
+    private const ADMIN = 3;
 
-    public function __construct($id,$name, $email, $password)
+    public function __construct($user_id,$name, $email, $password, $role_id)
     {
-        $this->id= $id;
+        $this->user_id= $user_id;
         $this->name= $name;
         $this->email=$email;
         $this->password=$password;
-        $this->role = self::USER;
-    }
-    public static function checkRole($user_id)
-    {
-        if (empty(Container::get('database')->search('admins', 'user_id', compact('user_id'))))
-        {
-            return self::USER;
-        }
-        else
-        {
-            return self::ADMINISTRATOR;
-        }
+        $this->role = $role_id;
     }
 
-    public static function getUser($user_id)
-    {
-        $user = self::find($user_id);
-        if (User::checkRole($user_id) == 'user')
-        {
-            $user = new User($user->user_id, $user->name, $user->email, $user->password );
-        }
-        else
-        {
-            $user = new Admin($user->user_id, $user->name, $user->email, $user->password );
-        }
-        return $user;
-    }
-    public static function isLoggedin()
-    {
-        if ( isset( $_SESSION['user_id'] ) ) {
-            // Grab user data from the database using the username
-            // Let them access the "logged in only" pages
-        } else {
-            // Redirect them to the login page
-            redirect('');
-        }
-
-    }
+    /*
+     *
+     * Check if given username exists in database, validate credentials and load into session
+     *
+     *
+     */
     public static function validate()
     {
         $user_id = User::validUser($_GET['username'], $_GET['password']);
-        if ($user_id == null)
+        if ($user_id != null)
         {
-            return false;
+            $_SESSION['user_id'] = $user_id;
+            return true;
         }
         else{
-            $_SESSION['user_id'] = $user_id;
+            return false;
         }
-        return true;
     }
     private static function validUser($name, $password)
     {
@@ -91,18 +61,62 @@ class User implements \Member
         }
         return null;
     }
+
+    /*
+     *
+     * Check if user is logged in, find user and return instance
+     *
+     *
+     */
+    public static function login_status($user_id)
+    {
+        User::isLoggedin();
+        return User::find($user_id);
+    }
+
+    public static function isLoggedin()
+    {
+        if ( isset( $_SESSION['user_id'] ) ){
+
+        }
+        else{
+            redirect('');
+        }
+    }
+
+    /*
+     * Find user and return appropriate instance
+     *
+     */
+    public static function find($user_id)
+    {
+        $user = Container::get('database')->search('users', 'user_id', compact('user_id'));
+        $user = $user[0];
+        if ($user->role_id == self::USER)
+        {
+            $user= new User($user->user_id, $user->name, $user->email, $user->password, $user->role_id );
+        }
+        elseif ($user->role_id == self::ADMIN)
+        {
+            $user = new Admin($user->user_id, $user->name, $user->email, $user->password, $user->role_id );
+        }
+        elseif ($user->role_id == self::MODERATOR)
+        {
+            $user = new Moderator($user->user_id, $user->name, $user->email, $user->password, $user->role_id );
+        }
+        return $user;
+
+    }
     public static function all()
     {
         $users = Container::get('database')->selectAll('users');
         return $users;
     }
 
-    public static function find($user_id)
-    {
-        $user = Container::get('database')->search('users', 'user_id', compact('user_id'));
-        return $user[0];
-
-    }
+    /*
+     * Check if user with name X already exists
+     *
+     */
     public function check($name)
     {
         $users = Container::get('database')->selectAll('users');
@@ -113,9 +127,42 @@ class User implements \Member
         }
         return true;
     }
+
+    public function edit ($action)
+    {
+        Container::get('database')->update('users', ['name'=> $action['name'], 'user_id' => $action['id']] );
+        Container::get('database')->update('users', ['email'=> $action['email'], 'user_id' => $action['id']] );
+        Container::get('database')->update('users', ['password'=> $action['pass'], 'user_id' => $action['id']] );
+        Container::get('database')->update('users', ['role_id'=> $action['role'], 'user_id' => $action['id']] );
+    }
+    public function delete ()
+    {
+        $name = $this->name;
+        Container::get('database')->delete('users', compact('name'));
+    }
+
+    public function setDefaultPermissions()
+    {
+        if ($this->role == self::USER)
+        {
+            return;
+        }
+        elseif ($this->role  == self::MODERATOR)
+        {
+            Permission::giveAssign($this->user_id);
+        }
+        elseif ($this->role  == self::ADMIN)
+        {
+            Permission::giveAssign($this->user_id);
+            Permission::giveAdd($this->user_id);
+            Permission::giveEdit($this->user_id);
+            Permission::giveDelete($this->user_id);
+        }
+    }
+
     public function getRole()
     {
-        return $this->role;
+            return "User";
     }
     public function isAdmin()
     {
@@ -129,17 +176,13 @@ class User implements \Member
     {
         return $this->email;
     }
+    public function getId()
+    {
+        return $this->user_id;
+    }
+    public function add($name, $email, $password, $role_id)
+    {
+        redirect('store');
+    }
 
-    public function edit ($action)
-    {
-        redirect('store');
-    }
-    public function addUser($name, $email, $password)
-    {
-        redirect('store');
-    }
-    public function delete($id)
-    {
-        redirect('store');
-    }
 }

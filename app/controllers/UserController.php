@@ -7,28 +7,33 @@
  */
 
 namespace MVCTraining\app\controllers;
-use MVCTraining\app\models\{Admin, Task, User};
+use MVCTraining\app\models\{Task, User,Permission, Role};
+use MVCTraining\core\Container;
 
 class UserController
 {
     public function add()
     {
-        User::isLoggedin();
-        $member = User::getUser($_SESSION['user_id']);
+        $loginUser = User::login_status($_SESSION['user_id']);
+        Permission::valid_action($loginUser->getId(), 'add');
+        $roles = Role::all();
         if(isset($_POST['submit'])) {
-            if ($member::check($_POST['name']) == false) {
+            if ($loginUser->check($_POST['name']) == false) {
                 $message = false;
-                return view('add-user', compact('users', 'tasks', 'member'), compact('message'));
+                return view('add-user', compact('users', 'tasks', 'roles', 'loginUser'), compact('message'));
             }
-            $member::addUser($_POST['name'], $_POST['email'],$_POST['userPassword']);
+            $newID =  $loginUser->add($_POST['name'], $_POST['email'],$_POST['userPassword'], $_POST['role']);
+            $user = User::find($newID);
+            $user->setDefaultPermissions();
         }
         $message = true;
-        return view('add-user', compact('users', 'tasks', 'member'), compact('message'));
+        return view('add-user', compact('users', 'tasks', 'roles', 'loginUser'), compact('message'));
     }
     public function edit($data = [])
     {
-        User::isLoggedin();
-        $member = User::getUser($_SESSION['user_id']);
+        $loginUser = User::login_status($_SESSION['user_id']);
+        Permission::valid_action($loginUser->getId(), 'edit');
+        $roles = Role::all();
         $message = false;
         if (isset($_POST['submit'])) {
             if(empty($data)) {
@@ -36,25 +41,27 @@ class UserController
             } else {
                 $user = User::find($data);
             }
-            return view('edit-user', compact('user', 'member'));
+            return view('edit-user', compact('user', 'roles', 'loginUser'));
         }
         if(isset($_POST['edit-user'])){
-
-            $member::edit($_POST);
+            $user = User::find($_POST['id']);
+            $user->edit($_POST);
             $message = true;
         }
         $users = User::all();
-        return view('edit-user', compact('users', 'member'), compact('message'));
+        return view('edit-user', compact('users', 'loginUser'), compact('message'));
 
     }
     public function delete($data = [])
     {
-        User::isLoggedin();
-        $member = User::getUser($_SESSION['user_id']);
+        $loginUser = User::login_status($_SESSION['user_id']);
+        Permission::valid_action($loginUser->getId(), 'delete');
         Task::update($data);
-        $member::delete($data);
+        $user = User::find($data);
+        $user->delete();
         $users = User::all();
         $tasks = Task::all();
-        return view('store', compact('users', 'tasks', 'member'));
+        redirect('store');
+        //return view('store', compact('users', 'tasks', 'loginUser'));
     }
 }

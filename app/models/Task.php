@@ -21,7 +21,8 @@ class Task
 
     public static function find($task_id)
     {
-        return Container::get('database')->search('tasks', 'task_id', compact('task_id'));
+        $task = Container::get('database')->search('tasks', 'task_id', compact('task_id'));
+        return $task[0];
     }
 
     public static function getUnassigned()
@@ -57,7 +58,7 @@ class Task
     }
 
 
-    public static function addTask($description, $assigned)
+    public static function add($description, $assigned)
     {
         if ($assigned == '0') {
             $user_id = null;
@@ -77,7 +78,7 @@ class Task
     public static function edit ($action)
     {
         if ($action['assigned'] === '') {
-            $action['assigned'] = null; // or 'NULL' for SQL
+            $action['assigned'] = null;
         }
         Container::get('database')->update('tasks', ['description'=> $action['description'], 'task_id' => $action['id']] );
         Container::get('database')->update('tasks', ['completed'=> $action['completed'], 'task_id' => $action['id']] );
@@ -88,7 +89,7 @@ class Task
     public static function delete ($id)
     {
         $task = Task::find($id);
-        $description = $task[0]->description;
+        $description = $task->description;
         Container::get('database')->delete('tasks', compact('description'));
     }
 

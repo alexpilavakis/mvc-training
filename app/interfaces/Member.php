@@ -10,13 +10,12 @@ interface Member
 {
     public function isAdmin();
     public function check($name);
+    public function add($name, $email, $password, $role_id);
     public function edit ($action);
-    public function addUser($name, $email, $password);
-    public function delete ($id);
-
-    public function getRole();
+    public function delete ();
+    public function setDefaultPermissions();
+    public function getId();
     public function getName();
     public function getEmail();
-
-
+    public function getRole();
 }

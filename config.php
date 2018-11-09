@@ -7,7 +7,7 @@
  */
 $array = [
     'database'=> [
-        'name'=> 'mytodo',
+        'name'=> 'test',
         'username'=> 'root',
         'password'=> 'password',
         'connection'=>'mysql:host=localhost',

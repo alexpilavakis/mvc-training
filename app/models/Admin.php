@@ -12,40 +12,20 @@ use MVCTraining\core\Container;
 
 class Admin extends User
 {
-    public function __construct($id,$name, $email, $password)
-    {
-        parent::__construct($id,$name, $email, $password);
-        $this->role = self::ADMINISTRATOR;
-    }
-
     public function isAdmin()
     {
         return true;
     }
 
-    public function addUser($name, $email, $password)
+    public function add($name, $email, $password, $role_id)
     {
         $parameters = [
             'name' => $name,
             'email' => $email,
-            'password' => $password
+            'password' => $password,
+            'role_id' => $role_id
         ];
-        Container::get('database')->insert('users', $parameters);
-
-        return true;
-    }
-
-    public function edit ($action)
-    {
-        Container::get('database')->update('users', ['name'=> $action['name'], 'user_id' => $action['id']] );
-        Container::get('database')->update('users', ['email'=> $action['email'], 'user_id' => $action['id']] );
-        Container::get('database')->update('users', ['password'=> $action['pass'], 'user_id' => $action['id']] );
-    }
-    public function delete ($id)
-    {
-        $user = User::find($id);
-        $name = $user->name;
-        Container::get('database')->delete('users', compact('name'));
+        return Container::get('database')->insert('users', $parameters);
     }
     public function allAdmins()
     {
@@ -53,5 +33,10 @@ class Admin extends User
         array_map(function ($admin){
             return self::find($admin->user_id);
         }, $admins);
+    }
+    public function getRole()
+    {
+        return "Admin";
+
     }
 }

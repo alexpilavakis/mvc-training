@@ -1,0 +1,11 @@
+create database test;
+create table roles (role_id int unsigned not null auto_increment, role varchar(50) not null, primary key(role_id));
+create table users (user_id int unsigned not null auto_increment, name varchar(50) not null, email varchar(50) not null, password varchar(50) not null, role_id int unsigned not null, primary key(user_id), constraint f_user_role foreign key(role_id) references roles(role_id));
+insert into roles (role) values ('user');
+insert into roles (role) values ('moderator');
+insert into roles (role) values ('admin');
+insert into users (name, email, password, role_id) values ('alex', 'alex@hotmail.com', 'alex123', 3);
+insert into users (name, email, password, role_id) values ('nicos','nicos@hotmail.com','nicos123',1);
+create table permissions (id int unsigned not null auto_increment, action varchar(50) not null, user_id int unsigned not null, primary key(id), constraint f_user_permission foreign key(user_id) references users(user_id));
+insert into permissions (action, user_id) values ('assign', 1), ('add', 1), ('edit', 1), ('delete', 1);
+

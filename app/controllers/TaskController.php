@@ -7,53 +7,55 @@
  */
 
 namespace MVCTraining\app\controllers;
-use MVCTraining\app\models\{Task, User};
+use MVCTraining\app\models\{Permission, Task, User};
 
 
 class TaskController
 {
     public function assign()
     {
-        User::isLoggedin();
-        $member = User::getUser($_SESSION['user_id']);
+        $loginUser = User::login_status($_SESSION['user_id']);
+        Permission::valid_action($loginUser->getId(), 'assign');
+
         if(isset($_POST['submit'])){
             Task::assign_task($_POST['task'], $_POST['user']);
         }
-
         $tasks = Task::getUnassigned();
         $users = User::all();
-
-        return view('assign', compact('tasks', 'users', 'member'));
+        return view('assign', compact('tasks', 'users', 'loginUser'));
     }
+
     public function add()
     {
-        User::isLoggedin();
-        $member = User::getUser($_SESSION['user_id']);
+        $loginUser = User::login_status($_SESSION['user_id']);
+        Permission::valid_action($loginUser->getId(), 'add');
+
         if(isset($_POST['submit'])) {
             if (Task::check($_POST['description']) == false) {
                 $message = false;
-                return view('add-task', compact('users', 'tasks', 'member'), compact('message'));
+                return view('add-task', compact('users', 'tasks', 'loginUser'), compact('message'));
             }
-            Task::addTask($_POST['description'], $_POST['assigned']);
+            Task::add($_POST['description'], $_POST['assigned']);
         }
         $message = true;
         $users = User::all();
         $tasks = Task::all();
-        return view('add-task', compact('users', 'tasks', 'member'), compact('message'));
+        return view('add-task', compact('users', 'tasks', 'loginUser'), compact('message'));
     }
     public function edit($data = [])
     {
         $message = false;
-        $member = User::getUser($_SESSION['user_id']);
+        $loginUser = User::login_status($_SESSION['user_id']);
+        Permission::valid_action($loginUser->getId(), 'edit');
+
         if (isset($_POST['submit'])) {
             if(empty($data)) {
                 $task = Task::find($_POST['task']);
             } else {
                 $task = Task::find($data);
             }
-            $task = $task[0];
             $users = User::all();
-            return view('edit-task', compact('task', 'users', 'member'));
+            return view('edit-task', compact('task', 'users', 'loginUser'));
         }
         if(isset($_POST['edit-task'])){
 
@@ -61,14 +63,16 @@ class TaskController
             $message = true;
         }
         $tasks = Task::all();
-        return view('edit-task', compact('tasks', 'member'), compact('message'));
+        return view('edit-task', compact('tasks', 'loginUser'), compact('message'));
     }
     public function delete($data = [])
     {
-        $member = User::getUser($_SESSION['user_id']);
+        $loginUser = User::login_status($_SESSION['user_id']);
+        Permission::valid_action($loginUser->getId(), 'delete');
+
         Task::delete($data);
         $users = User::all();
         $tasks = Task::all();
-        return view('store', compact('users', 'tasks','member'));
+        return view('store', compact('users', 'tasks','loginUser'));
     }
 }

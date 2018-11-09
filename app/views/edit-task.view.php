@@ -6,9 +6,9 @@
     <main class="container" style="padding-top: 50px">
         <h4 class="mb-3">Edit Task</h4>
         <?php if (($tasks)!= NULL) :?>
-            <form METHOD="post" class="form-inline">
+            <form METHOD="post" class="form-group">
                 <div class="row">
-                    <div class="form-group col-md-6 mb-3">
+                    <div class="form-group col-sm-3 mb-3">
                         <label for="task">Tasks</label>
                         <select name="task" class="custom-select d-block w-100" id="task" required>
                             <option value="">Choose...</option>
@@ -20,29 +20,34 @@
                             Please select a valid Task.
                         </div>
                     </div>
-                    <div class="form-group col-md-6 mb-3" style="padding-top: 25px;">
+                </div>
+                <div class="row">
+                    <div class="form-group col-sm-3 mb-3">
                         <button name="submit" class="btn btn-primary"  type="submit">Edit Task</button>
                     </div>
                 </div>
             </form>
 
             <?php if(isset($_POST['edit-task']) and ($message == true)) :?>
-                <div class="alert alert-success" role="alert">
-                    <?="Edit Succesful "?>
+            <div class="row">
+                <div class="col-sm-6">
+                    <div class="alert alert-success" role="alert">
+                        <?="Edit Succesful "?>
+                    </div>
                 </div>
-
+            </div>
             <?php endif; ?>
 
         <?php endif;?>
             <?php if(isset($_POST['submit'])) :?>
                 <form METHOD="post">
-                    <div class="form-row justify-content-md-start">
-                        <div class="form-group col-md-3">
+                    <div class="row">
+                        <div class="form-group col-sm-3 mb-3">
                             <label for="inputDescription">Description</label>
                             <input type="hidden" name="id" id="inputId" value="<?=$task->task_id?>">
                             <input type="text" name="description" id="inputDescription" value="<?=$task->description?>">
                         </div>
-                        <div class="form-group col-md-3">
+                        <div class="form-group col-sm-3 mb-3">
                             <label for="inputCompleted">Completed</label>
                             <?php if ($task->completed == 1): ?>
                                 <select name="completed" id="inputState" class="form-control">
@@ -56,7 +61,7 @@
                                 </select>
                             <?php endif; ?>
                         </div>
-                        <div class="form-group mb-3">
+                        <div class="form-group col-sm-3 mb-3">
                             <label for="assigned">Assigned</label>
                             <select name="assigned" class="custom-select d-block w-100" id="assigned" required>
                                 <option value="">Choose...</option>
@@ -74,7 +79,11 @@
                             </div>
                         </div>
                     </div>
-                    <button name="edit-task" class="btn btn-primary"  type="submit">Edit Task</button>
+                    <div class="row">
+                        <div class="form-group col-sm-3 mb-3">
+                            <button name="edit-task" class="btn btn-primary"  type="submit">Edit Task</button>
+                        </div>
+                    </div>
                 </form>
             <?php endif; ?>
 
