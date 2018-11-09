@@ -24,7 +24,9 @@ id action user_id
 
  */
 
-$alexUser = UserService::findUserByUsername('alex');
+$userService = new UserService();
+
+$alexUser = $userService->findUserByUsername('alex');
 //here I will get an Admin class as alex is an admin user
 
 //Now i want to edit valentinos data
@@ -34,7 +36,7 @@ $alexUser = UserService::findUserByUsername('alex');
 $canDo = Permission::canDo('edit',$alexUser->id);
 
 if($canDo){
-  $valentinosUser = UserService::findUserByUsername('valentinos');
+  $valentinosUser = $userService->findUserByUsername('valentinos');
   $valentinosUser->edit(['username' => "poupouxios"];
 }else{
   throw new Exception('cannot perform edit');
@@ -42,7 +44,7 @@ if($canDo){
 
 
 //assume now poupouxios logs in
-$poupouxiosUser = UserService::findUserByUsername('poupouxios');
+$poupouxiosUser = $userService->findUserByUsername('poupouxios');
 //here I will get a User class as poupouxios is an normal user
 
 //Now i want to edit alex data
@@ -52,7 +54,7 @@ $poupouxiosUser = UserService::findUserByUsername('poupouxios');
 $canDo = Permission::canDo('edit',$poupouxiosUser->id);
 
 if($canDo){
-  $alexUser = UserService::findUserByUsername('alex');
+  $alexUser = $userService->findUserByUsername('alex');
   $alexUser->edit(['username' => "alex"];
 }else{
   throw new Exception('cannot perform edit');
