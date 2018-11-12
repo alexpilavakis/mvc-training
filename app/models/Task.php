@@ -95,11 +95,15 @@ class Task
 
     public static function update ($user_id)
     {
-        $assigned_tasks = Container::get('database')->search('tasks', 'user_id', compact('user_id'));
+        $assigned_tasks = self::myTasks($user_id);
         foreach ($assigned_tasks as $assigned_task)
         {
             Container::get('database')->update('tasks', ['user_id'=> null, 'task_id' => $assigned_task->task_id] );
         }
     }
 
+    public static function myTasks($user_id)
+    {
+        return Container::get('database')->search('tasks', 'user_id', compact('user_id'));
+    }
 }

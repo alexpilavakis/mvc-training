@@ -9,10 +9,12 @@
                     <th>#</th>
                     <th>Description</th>
                     <th>Completed</th>
-                    <th>Assigned</th>
                     <?php if($loginUser->isAdmin()) : ?>
+                        <th>Assigned To</th>
                         <th>Edit</th>
                         <th>Delete</th>
+                    <?php else : ?>
+                        <th>Assigned</th>
                     <?php endif; ?>
                 </tr>
                 <tr>
@@ -33,7 +35,11 @@
                         </td>
                         <td>
                             <?php if ($task->user_id != 0) :?>
-                                <span class='badge badge-warning'> Assigned </span>
+                                <?php if($loginUser->isAdmin()) : ?>
+                                    <span class='badge badge-warning'><?= $task->user_id; ?></span>
+                                <?php else : ?>
+                                    <span class='badge badge-warning'> Assigned </span>
+                                <?php endif ?>
                             <?php else : ?>
                                 <span class='badge badge-secondary'> Not Assigned </span>
                             <?php endif ?>
@@ -41,10 +47,10 @@
 
                     <?php if($loginUser->isAdmin()) : ?>
                         <td>
-                            <form method="post" action="/Task/edit/<?= $task->task_id ?>"><button type='submit' name="submit" class='btn btn-outline-primary btn-sm'>Edit</button></form>
+                            <form method="POST" action="/Task/edit/<?= $task->task_id ?>"><button type='submit' name="submit" class='btn btn-outline-primary btn-sm'>Edit</button></form>
                         </td>
                         <td>
-                            <form method="post" action="/Task/delete/<?= $task->task_id ?>"><button type='submit' class='btn btn-outline-danger btn-sm'>Delete</button></form>
+                            <form method="POST" action="/Task/delete/<?= $task->task_id ?>"><button type='submit' class='btn btn-outline-danger btn-sm'>Delete</button></form>
                         </td>
                     <?php endif;?>
                 </tr>
@@ -90,10 +96,10 @@
                                 <?php endif;?>
                             </td>
                             <td>
-                                <form method="post" action="/User/edit/<?= $user->user_id ?>"><button type='submit' name="submit" class='btn btn-outline-primary btn-sm'>Edit</button></form>
+                                <form method="POST" action="/User/edit/<?= $user->user_id ?>"><button type='submit' name="submit" class='btn btn-outline-primary btn-sm'>Edit</button></form>
                             </td>
                             <td>
-                                <form method="post" action="/User/delete/<?= $user->user_id ?>"><button type='submit' class='btn btn-outline-danger btn-sm'>Delete</button></form>
+                                <form method="POST" action="/User/delete/<?= $user->user_id ?>"><button type='submit' class='btn btn-outline-danger btn-sm'>Delete</button></form>
                             </td>
                         <?php else :?>
                             <td>
@@ -107,17 +113,17 @@
 
         <div class="row justify-content-sm-center">
             <div class="col-sm-auto">
-                <form method="POST" id="addtask" action="Task/add">
+                <form method="GET" id="addtask" action="Task/add">
                     <a class="btn btn-primary" href="javascript:DoPost('addtask')" role="button">Add a Task</a>
                 </form>
             </div>
             <div class="col-sm-auto">
-                <form method="POST" id="adduser" action="User/add">
+                <form method="GET" id="adduser" action="User/add">
                     <a class="btn btn-primary" href="javascript:DoPost('adduser')" role="button">Add a User</a>
                 </form>
             </div>
             <div class="col-sm-auto">
-                <form method="POST" id="assigntask" action="/assign-task">
+                <form method="GET" id="assigntask" action="/assign-task">
                     <a class="btn btn-primary" href="javascript:DoPost('assigntask')" role="button">Assign a User to Task</a>
                 </form>
             </div>

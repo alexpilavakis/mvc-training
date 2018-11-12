@@ -6,7 +6,7 @@
     <main class="container" style="padding-top: 50px">
         <h4 class="mb-3">Edit User</h4>
         <?php if (($users)!= NULL) :?>
-            <form METHOD="post" class="form-group">
+            <form METHOD="POST" class="form-group">
                 <div class="row">
                     <div class="form-group col-sm-3 mb-3">
                         <label for="user">Users</label>
@@ -79,8 +79,46 @@
                             <button name="edit-user" class="btn btn-primary small"  type="submit">Edit User</button>
                         </div>
                     </div>
+                    <div class="row">
+                        <div class="form-group col-sm-3 mb-3">
+                            <button name="give-permissions" class="btn btn-primary small"  type="submit">Change Permissions</button>
+                        </div>
+                    </div>
                     <input type="hidden" name="id" id="inputId" value="<?=$user->user_id?>">
                 </form>
+            <?php endif; ?>
+
+        <?php if(isset($_POST['give-permissions'])) :?>
+            <h4 class="mb-3">Permissions for: <?= $user->name." (".$user->getRole().")"?></h4>
+            <form METHOD="post" class="form-group">
+                <div class="row form-group">
+                    <div class="col-sm-3 mb-3">
+                        <?php foreach ($permissions as $permission) : ?>
+                            <?php if($user->CanDo($permission)) :?>
+                                <div class="form-check">
+                                    <input name = "check.<?= $permission ?>" class="form-check-input" checked type="checkbox" value="<?= $permission ?>" id="<?= $permission ?>.Check">
+                                    <label class="form-check-label" for="defaultCheck.<?= $permission ?>">
+                                        <?= $permission ?>
+                                    </label>
+                                </div>
+                            <?php else:?>
+                                <div class="form-check">
+                                    <input name = "check.<?= $permission ?>" class="form-check-input" type="checkbox" value="<?= $permission ?>" id="<?= $permission ?>.Check">
+                                    <label class="form-check-label" for="<?= $permission ?>.Check">
+                                        <?=  $permission ?>
+                                    </label>
+                                </div>
+                            <?php endif;?>
+                        <?php endforeach;?>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group col-sm-3 mb-3">
+                        <button name="submit-permissions" class="btn btn-primary small"  type="submit">Change Permissions</button>
+                    </div>
+                </div>
+                <input type="hidden" name="id" id="inputId" value="<?=$user->user_id?>">
+            </form>
             <?php endif; ?>
 
 

@@ -3,7 +3,7 @@
     <span class="navbar-toggle">
 
         <strong><?php echo $loginUser->getName(); ?></strong>
-        <small><i  style="color: #FFFFFF;">(<?php echo ucfirst($loginUser->getRole()); ?>)</i></small>
+        <small><i  style="color: #FFFFFF;">(<?php echo $loginUser->getRole(); ?>)</i></small>
 
     </span>
     <script type="text/javascript">
@@ -28,31 +28,37 @@
                     <a class="nav-link" href="javascript:DoPost('about')">About</a>
                 </form>
             </li>
-            <li class="nav-item">
+            <?php if($loginUser->isAdmin() or $loginUser->isModerator())  : ?>
+                               <li class="nav-item">
+                    <form method="GET" id="myTasks" action="/my-tasks">
+                        <a class="nav-link" href="javascript:DoPost('myTasks')">My Tasks</a>
+                    </form>
+                </li>
+                <li class="nav-item">
+                    <form method="GET" id="theForm2" action="/assign-task">
+                        <a class="nav-link" href="javascript:DoPost('theForm2')">Assign Task</a>
+                    </form>
 
-                <form method="POST" id="theForm2" action="/assign-task">
-                    <a class="nav-link" href="javascript:DoPost('theForm2')">Assign Task</a>
-                </form>
-
-            </li>
+                </li>
+            <?php endif; ?>
             <?php if($loginUser->isAdmin()) : ?>
                 <li class="nav-item">
-                    <form method="POST" id="theForm3" action="/Task/add">
+                    <form method="GET" id="theForm3" action="/Task/add">
                         <a class="nav-link" href="javascript:DoPost('theForm3')">Add Task</a>
                     </form>
                 </li>
                 <li class="nav-item">
-                    <form method="POST" id="theForm4" action="/User/add">
+                    <form method="GET" id="theForm4" action="/User/add">
                         <a class="nav-link" href="javascript:DoPost('theForm4')">Add User</a>
                     </form>
                 </li>
                 <li class="nav-item">
-                    <form method="POST" id="edittask" action="/Task/edit">
+                    <form method="GET" id="edittask" action="/Task/edit">
                         <a class="nav-link" href="javascript:DoPost('edittask')">Edit Task</a>
                     </form>
                 </li>
                 <li class="nav-item">
-                    <form method="POST" id="edituser" action="/User/edit">
+                    <form method="GET" id="edituser" action="/User/edit">
                         <a class="nav-link" href="javascript:DoPost('edituser')">Edit User</a>
                     </form>
                 </li>

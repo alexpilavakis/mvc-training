@@ -8,7 +8,7 @@
         <form METHOD="post" class="form-group">
             <div class="row">
                 <div class="form-group col-sm-3 mb-3">
-                    <label for="description">Descritpion</label>
+                    <label for="description">Description</label>
                     <input type="text" class="form-control" name="description" id="description" placeholder="" value="" required>
                     <div class="invalid-feedback">
                         Valid description is required.
@@ -38,8 +38,8 @@
         </form>
         <div class="row">
             <div class="col-sm-6">
-                <?php if (($_POST['description'])!= NULL) :?>
-                    <?php if(isset($_POST['submit']) and ($message == true)) :?>
+                <?php if(isset($_POST['submit'])) :?>
+                    <?php if($message == true) :?>
                         <div class="alert alert-success" role="alert">
                             <?="You have added ".$_POST['description'] ?>
                         </div>
@@ -48,7 +48,7 @@
                             <?="Task ".$_POST['description']." already exists" ?>
                         </div>
                     <?php endif; ?>
-                <?php endif;?>
+                <?php endif; ?>
             </div>
         </div>
     </main>

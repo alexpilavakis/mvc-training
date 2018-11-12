@@ -6,7 +6,7 @@
     <main class="container" style="padding-top: 50px">
         <h4 class="mb-3">Edit Task</h4>
         <?php if (($tasks)!= NULL) :?>
-            <form METHOD="post" class="form-group">
+            <form METHOD="POST" class="form-group">
                 <div class="row">
                     <div class="form-group col-sm-3 mb-3">
                         <label for="task">Tasks</label>

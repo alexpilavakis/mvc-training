@@ -15,24 +15,28 @@ class UserController
     public function add()
     {
         $loginUser = User::login_status($_SESSION['user_id']);
-        Permission::valid_action($loginUser->getId(), 'add');
+        if (!Permission::valid_action($loginUser->getId(), 'add')){
+            redirect('store');
+        }
         $roles = Role::all();
         if(isset($_POST['submit'])) {
             if ($loginUser->check($_POST['name']) == false) {
                 $message = false;
-                return view('add-user', compact('users', 'tasks', 'roles', 'loginUser'), compact('message'));
+                return view('add-user', compact('roles', 'loginUser'), compact('message'));
             }
             $newID =  $loginUser->add($_POST['name'], $_POST['email'],$_POST['userPassword'], $_POST['role']);
             $user = User::find($newID);
             $user->setDefaultPermissions();
         }
         $message = true;
-        return view('add-user', compact('users', 'tasks', 'roles', 'loginUser'), compact('message'));
+        return view('add-user', compact('roles', 'loginUser'), compact('message'));
     }
     public function edit($data = [])
     {
         $loginUser = User::login_status($_SESSION['user_id']);
-        Permission::valid_action($loginUser->getId(), 'edit');
+        if (!Permission::valid_action($loginUser->getId(), 'edit')){
+            redirect('store');
+        }
         $roles = Role::all();
         $message = false;
         if (isset($_POST['submit'])) {
@@ -46,7 +50,32 @@ class UserController
         if(isset($_POST['edit-user'])){
             $user = User::find($_POST['id']);
             $user->edit($_POST);
+            if ($user->role != $_POST['role'])
+            {
+                $user = User::find($_POST['id']);
+                $user->removePermissions();
+                $user->setDefaultPermissions();
+            }
             $message = true;
+        }
+        if(isset($_POST['give-permissions']))
+        {
+            $permissions = Permission::allTypes();
+            $user = User::find($_POST['id']);
+            return view('edit-user', compact('user', 'permissions', 'loginUser'));
+        }
+        if(isset($_POST['submit-permissions']))
+        {
+            $user = User::find($_POST['id']);
+            $user->removePermissions();
+            $permissions = Permission::allTypes();
+            foreach ($permissions as $permission)
+            {
+                if ($_POST["check_".$permission])
+                {
+                    $user->givePermission($permission);
+                }
+            }
         }
         $users = User::all();
         return view('edit-user', compact('users', 'loginUser'), compact('message'));
@@ -55,13 +84,12 @@ class UserController
     public function delete($data = [])
     {
         $loginUser = User::login_status($_SESSION['user_id']);
-        Permission::valid_action($loginUser->getId(), 'delete');
+        if (!Permission::valid_action($loginUser->getId(), 'delete')){
+            redirect('store');
+        }
         Task::update($data);
         $user = User::find($data);
         $user->delete();
-        $users = User::all();
-        $tasks = Task::all();
         redirect('store');
-        //return view('store', compact('users', 'tasks', 'loginUser'));
     }
 }

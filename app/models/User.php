@@ -9,7 +9,6 @@
 namespace MVCTraining\app\models;
 
 use MVCTraining\core\Container;
-use MVCTraining\app\models\Role;
 
 class User implements \Member
 {
@@ -38,9 +37,9 @@ class User implements \Member
      *
      *
      */
-    public static function validate()
+    public static function validate($name, $password)
     {
-        $user_id = User::validUser($_GET['username'], $_GET['password']);
+        $user_id = User::validUser($name, $password);
         if ($user_id != null)
         {
             $_SESSION['user_id'] = $user_id;
@@ -137,8 +136,9 @@ class User implements \Member
     }
     public function delete ()
     {
-        $name = $this->name;
-        Container::get('database')->delete('users', compact('name'));
+        $user_id = $this->user_id;
+        Permission::removePermissions($user_id);
+        Container::get('database')->delete('users', compact('user_id'));
     }
 
     public function setDefaultPermissions()
@@ -149,22 +149,43 @@ class User implements \Member
         }
         elseif ($this->role  == self::MODERATOR)
         {
-            Permission::giveAssign($this->user_id);
+            Permission::givePermission($this->user_id, 'assign');
         }
         elseif ($this->role  == self::ADMIN)
         {
-            Permission::giveAssign($this->user_id);
-            Permission::giveAdd($this->user_id);
-            Permission::giveEdit($this->user_id);
-            Permission::giveDelete($this->user_id);
+            Permission::givePermission($this->user_id, 'assign');
+            Permission::givePermission($this->user_id, 'add');
+            Permission::givePermission($this->user_id, 'edit');
+            Permission::givePermission($this->user_id, 'delete');
         }
     }
+    public function givePermission($action)
+    {
+        Permission::givePermission($this->user_id, $action);
+    }
+    public function removePermissions()
+    {
+        Permission::removePermissions($this->user_id);
+    }
 
+    public function myTasks()
+    {
+        return Task::myTasks($this->user_id);
+    }
+
+    public function canDo($action)
+    {
+        return Permission::valid_action($this->user_id, $action);
+    }
     public function getRole()
     {
-            return "User";
+        return ucfirst(Role::getRole($this->role));
     }
     public function isAdmin()
+    {
+        return false;
+    }
+    public function isModerator()
     {
         return false;
     }

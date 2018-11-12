@@ -12,11 +12,19 @@ use MVCTraining\app\models\{Permission, Task, User};
 
 class TaskController
 {
+    public function mytasks()
+    {
+        $loginUser = User::login_status($_SESSION['user_id']);
+        $tasks = $loginUser->myTasks();
+        return view('my-tasks', compact('tasks','loginUser'));
+    }
+
     public function assign()
     {
         $loginUser = User::login_status($_SESSION['user_id']);
-        Permission::valid_action($loginUser->getId(), 'assign');
-
+        if (!Permission::valid_action($loginUser->getId(), 'assign')){
+            redirect('store');
+        }
         if(isset($_POST['submit'])){
             Task::assign_task($_POST['task'], $_POST['user']);
         }
@@ -28,26 +36,28 @@ class TaskController
     public function add()
     {
         $loginUser = User::login_status($_SESSION['user_id']);
-        Permission::valid_action($loginUser->getId(), 'add');
-
+        if (!Permission::valid_action($loginUser->getId(), 'add')){
+            redirect('store');
+        }
         if(isset($_POST['submit'])) {
-            if (Task::check($_POST['description']) == false) {
+            if (Task::check($_GET['description']) == false) {
                 $message = false;
-                return view('add-task', compact('users', 'tasks', 'loginUser'), compact('message'));
+                return view('add-task', compact('users', 'loginUser'), compact('message'));
             }
             Task::add($_POST['description'], $_POST['assigned']);
         }
         $message = true;
         $users = User::all();
-        $tasks = Task::all();
-        return view('add-task', compact('users', 'tasks', 'loginUser'), compact('message'));
+        //$tasks = Task::all();
+        return view('add-task', compact('users', 'loginUser'), compact('message'));
     }
     public function edit($data = [])
     {
         $message = false;
         $loginUser = User::login_status($_SESSION['user_id']);
-        Permission::valid_action($loginUser->getId(), 'edit');
-
+        if (!Permission::valid_action($loginUser->getId(), 'edit')){
+            redirect('store');
+        }
         if (isset($_POST['submit'])) {
             if(empty($data)) {
                 $task = Task::find($_POST['task']);
@@ -68,11 +78,13 @@ class TaskController
     public function delete($data = [])
     {
         $loginUser = User::login_status($_SESSION['user_id']);
-        Permission::valid_action($loginUser->getId(), 'delete');
-
+        if (!Permission::valid_action($loginUser->getId(), 'delete')){
+            redirect('store');
+        }
         Task::delete($data);
-        $users = User::all();
-        $tasks = Task::all();
-        return view('store', compact('users', 'tasks','loginUser'));
+        //$users = User::all();
+        //$tasks = Task::all();
+        redirect('store');
+        //return view('store', compact('users', 'tasks','loginUser'));
     }
 }

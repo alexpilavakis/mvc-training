@@ -22,6 +22,11 @@ class Role
     public static function getRole($role_id)
     {
         $roles = Container::get('database')->search('roles', 'role_id', compact('role_id'));
-        return $roles[0];
+        If (count($roles) > 0){
+            return $roles[0]->role;
+        }else{
+            return '';
+
+        }
     }
 }

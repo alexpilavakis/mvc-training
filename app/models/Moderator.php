@@ -11,9 +11,8 @@ namespace MVCTraining\app\models;
 
 class Moderator extends User
 {
-    public function getRole()
+    public function isModerator()
     {
-        return "Moderator";
+        return true;
     }
-
 }

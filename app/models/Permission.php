@@ -16,55 +16,41 @@ class Permission
      * @param  [type] $action [description]
      * @param  [type] $user_id [description]
      */
+    public static $actions = [
+        'assign' => 'assign',
+        'add' => 'add',
+        'edit' => 'edit',
+        'delete' => 'delete'
+        ];
+
     public static function valid_action($user_id, $action)
     {
-        if (empty($user_actions = Container::get('database')->search('permissions', 'user_id', compact('user_id')))){
-            return redirect('store');
-        }else {
+        if (!empty($user_actions = Container::get('database')->search('permissions', 'user_id', compact('user_id'))))
+        {
             foreach ($user_actions as $user_action) {
                 if ($user_action->action == $action) {
                     return true;
                 }
             }
         }
-        return redirect('store');
+        return false;
+    }
+    public static function allTypes()
+    {
+        return self::$actions;
+    }
+    public static function givePermission($user_id, $action)
+    {
+        $parameters = [
+            'action' => $action,
+            'user_id' => $user_id,
+        ];
+        Container::get('database')->insert('permissions', $parameters);
+        return true;
+    }
 
-    }
-
-    public static function giveAssign($user_id)
+    public static function removePermissions($user_id)
     {
-        $parameters = [
-            'action' => 'assign',
-            'user_id' => $user_id,
-        ];
-        Container::get('database')->insert('permissions', $parameters);
-        return true;
-    }
-    public static function giveAdd($user_id)
-    {
-        $parameters = [
-            'action' => 'add',
-            'user_id' => $user_id,
-        ];
-        Container::get('database')->insert('permissions', $parameters);
-        return true;
-    }
-    public static function giveEdit($user_id)
-    {
-        $parameters = [
-            'action' => 'edit',
-            'user_id' => $user_id,
-        ];
-        Container::get('database')->insert('permissions', $parameters);
-        return true;
-    }
-    public static function giveDelete($user_id)
-    {
-        $parameters = [
-            'action' => 'delete',
-            'user_id' => $user_id,
-        ];
-        Container::get('database')->insert('permissions', $parameters);
-        return true;
+        Container::get('database')->delete('permissions', compact('user_id'));
     }
 }

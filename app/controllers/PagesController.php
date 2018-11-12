@@ -10,7 +10,7 @@ class PagesController
     public function home()
     {
         if(!empty($_GET)) {
-            if (User::validate()){
+            if (User::validate($_GET['username'], $_GET['password'])){
                 redirect('store');
             }
             else {
@@ -23,9 +23,19 @@ class PagesController
     public function store()
     {
         $loginUser = User::login_status($_SESSION['user_id']);
-        $users = User::all();
-        $tasks = Task::all();
-        return view('store', compact('users', 'tasks', 'loginUser'));
+        if ($loginUser->role == 1)
+        {
+            $tasks = $loginUser->myTasks();
+            $users [0] = $loginUser;
+            $message = true;
+        }
+        else
+        {
+            $message = false;
+            $users = User::all();
+            $tasks = Task::all();
+        }
+        return view('store', compact('users', 'tasks', 'loginUser', 'message'));
     }
     public function about()
     {

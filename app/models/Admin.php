@@ -34,9 +34,4 @@ class Admin extends User
             return self::find($admin->user_id);
         }, $admins);
     }
-    public function getRole()
-    {
-        return "Admin";
-
-    }
 }

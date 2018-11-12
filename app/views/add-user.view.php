@@ -52,8 +52,8 @@
         </form>
             <div class="row" >
                 <div class="col-sm-6">
-                    <?php if (($_POST['name'])!= NULL) :?>
-                        <?php if(isset($_POST['submit']) and ($message == true)) :?>
+                    <?php if (isset($_POST['submit'])) :?>
+                        <?php if($message == true) :?>
                             <div class="alert alert-success" role="alert">
                                 <?="You have added ".$_POST['name'] ?>
                             </div>
