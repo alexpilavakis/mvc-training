@@ -7,7 +7,7 @@
  */
 
 namespace MVCTraining\app\models;
-use MVCTraining\core\Container;
+use MVCTraining\app\repositories\PermissionRepository;
 
 class Permission
 {
@@ -25,7 +25,7 @@ class Permission
 
     public static function valid_action($user_id, $action)
     {
-        if (!empty($user_actions = Container::get('database')->search('permissions', 'user_id', compact('user_id'))))
+        if (!empty($user_actions = PermissionRepository::getUserActions($user_id)))
         {
             foreach ($user_actions as $user_action) {
                 if ($user_action->action == $action) {
@@ -41,16 +41,12 @@ class Permission
     }
     public static function givePermission($user_id, $action)
     {
-        $parameters = [
-            'action' => $action,
-            'user_id' => $user_id,
-        ];
-        Container::get('database')->insert('permissions', $parameters);
+        PermissionRepository::allowAction($user_id, $action);
         return true;
     }
 
     public static function removePermissions($user_id)
     {
-        Container::get('database')->delete('permissions', compact('user_id'));
+        PermissionRepository::removePermissions($user_id);
     }
 }

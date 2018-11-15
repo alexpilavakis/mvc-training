@@ -8,7 +8,9 @@
 
 namespace MVCTraining\app\models;
 
-use MVCTraining\core\Container;
+use MVCTraining\app\factories\UserFactory;
+use MVCTraining\app\repositories\TaskRepository;
+use MVCTraining\app\repositories\UserRepository;
 
 class User implements \Member
 {
@@ -30,41 +32,25 @@ class User implements \Member
         $this->password=$password;
         $this->role = $role_id;
     }
-
     /*
-     *
      * Check if given username exists in database, validate credentials and load into session
-     *
      *
      */
     public static function validate($name, $password)
     {
-        $user_id = User::validUser($name, $password);
+        $user_id = UserRepository::validate($name, $password);
         if ($user_id != null)
         {
             $_SESSION['user_id'] = $user_id;
             return true;
         }
-        else{
+        else
+        {
             return false;
         }
     }
-    private static function validUser($name, $password)
-    {
-        if (!empty($valid_users = Container::get('database')->search('users', 'name', compact('name')))) {
-            foreach ($valid_users as $user) {
-                if ($user->password == $password) {
-                    return $user->user_id;
-                }
-            }
-        }
-        return null;
-    }
-
     /*
-     *
      * Check if user is logged in, find user and return instance
-     *
      *
      */
     public static function login_status($user_id)
@@ -82,34 +68,22 @@ class User implements \Member
             redirect('');
         }
     }
-
     /*
      * Find user and return appropriate instance
      *
      */
     public static function find($user_id)
     {
-        $user = Container::get('database')->search('users', 'user_id', compact('user_id'));
-        $user = $user[0];
-        if ($user->role_id == self::USER)
-        {
-            $user= new User($user->user_id, $user->name, $user->email, $user->password, $user->role_id );
-        }
-        elseif ($user->role_id == self::ADMIN)
-        {
-            $user = new Admin($user->user_id, $user->name, $user->email, $user->password, $user->role_id );
-        }
-        elseif ($user->role_id == self::MODERATOR)
-        {
-            $user = new Moderator($user->user_id, $user->name, $user->email, $user->password, $user->role_id );
-        }
-        return $user;
-
+        $user = UserRepository::findByID($user_id);
+        $factory = new UserFactory();
+        return $factory->createMember($user);
     }
+    /*
+     * Get all Users
+     */
     public static function all()
     {
-        $users = Container::get('database')->selectAll('users');
-        return $users;
+        return UserRepository::all();
     }
 
     /*
@@ -118,7 +92,7 @@ class User implements \Member
      */
     public function check($name)
     {
-        $users = Container::get('database')->selectAll('users');
+        $users = UserRepository::findByName($name);
         foreach ($users as $user) {
             if ($user->name == $name) {
                 return false;
@@ -127,18 +101,17 @@ class User implements \Member
         return true;
     }
 
-    public function edit ($action)
+    public function edit ($data)
     {
-        Container::get('database')->update('users', ['name'=> $action['name'], 'user_id' => $action['id']] );
-        Container::get('database')->update('users', ['email'=> $action['email'], 'user_id' => $action['id']] );
-        Container::get('database')->update('users', ['password'=> $action['pass'], 'user_id' => $action['id']] );
-        Container::get('database')->update('users', ['role_id'=> $action['role'], 'user_id' => $action['id']] );
+        UserRepository::edit($data['id'],['name'=> $data['name']]);
+        UserRepository::edit($data['id'],['email'=>$data['email']]);
+        UserRepository::edit($data['id'],['password'=>$data['pass']]);
+        UserRepository::edit($data['id'],['role_id'=>$data['role']]);
     }
     public function delete ()
     {
-        $user_id = $this->user_id;
-        Permission::removePermissions($user_id);
-        Container::get('database')->delete('users', compact('user_id'));
+        Permission::removePermissions($this->user_id);
+        UserRepository::delete($this->user_id);
     }
 
     public function setDefaultPermissions()
@@ -170,7 +143,7 @@ class User implements \Member
 
     public function myTasks()
     {
-        return Task::myTasks($this->user_id);
+        return TaskRepository::myTasks($this->user_id);
     }
 
     public function canDo($action)

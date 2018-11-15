@@ -7,7 +7,7 @@
  */
 
 namespace MVCTraining\app\models;
-use MVCTraining\core\Container;
+use MVCTraining\app\repositories\RoleRepository;
 
 
 class Role
@@ -15,15 +15,14 @@ class Role
 
     public static function all()
     {
-        $roles = Container::get('database')->selectAll('roles');
-        return $roles;
+        return RoleRepository::all();
     }
 
     public static function getRole($role_id)
     {
-        $roles = Container::get('database')->search('roles', 'role_id', compact('role_id'));
-        If (count($roles) > 0){
-            return $roles[0]->role;
+        $role = RoleRepository::findRole($role_id);
+        If (count($role) > 0){
+            return $role[0]->role;
         }else{
             return '';
 

@@ -8,7 +8,6 @@
 
 namespace MVCTraining\app\controllers;
 use MVCTraining\app\models\{Task, User,Permission, Role};
-use MVCTraining\core\Container;
 
 class UserController
 {

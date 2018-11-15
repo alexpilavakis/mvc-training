@@ -8,47 +8,43 @@
 
 namespace MVCTraining\app\models;
 
-use MVCTraining\core\Container;
+use MVCTraining\app\repositories\TaskRepository;
 
 class Task
 {
 
     public static function all()
     {
-        $tasks = Container::get('database')->selectAll('tasks');
-        return $tasks;
+        return TaskRepository::all();
     }
 
     public static function find($task_id)
     {
-        $task = Container::get('database')->search('tasks', 'task_id', compact('task_id'));
-        return $task[0];
+        return TaskRepository::findByID($task_id);
     }
 
     public static function getUnassigned()
     {
-        $tasks = Container::get('database')->selectAll('tasks');
-
+        $tasks = TaskRepository::all();
         $unassigned = array_filter($tasks, function ($task){
             return $task->user_id == 0;
         });
 
         return $unassigned;
     }
-
     public static function assign_task($task, $user)
     {
         $parameters = [
             'user_id' => (int)$user,
             'description' => $task
         ];
-        Container::get('database')->update('tasks',$parameters);
+        TaskRepository::update($parameters);
         return true;
     }
 
     public static function check($description)
     {
-        $tasks = Container::get('database')->selectAll('tasks');
+        $tasks = TaskRepository::all();
         foreach ($tasks as $task) {
             if ($task->description == $description) {
                 return false;
@@ -56,8 +52,6 @@ class Task
         }
         return true;
     }
-
-
     public static function add($description, $assigned)
     {
         if ($assigned == '0') {
@@ -71,39 +65,38 @@ class Task
             'completed' => 0,
             'user_id' => $user_id
         ];
-        Container::get('database')->insert('tasks', $parameters);
+        TaskRepository::insert($parameters);
         return true;
     }
 
-    public static function edit ($action)
+    public static function edit ($data)
     {
-        if ($action['assigned'] === '') {
-            $action['assigned'] = null;
+        if ($data['assigned'] === '') {
+            $data['assigned'] = null;
         }
-        Container::get('database')->update('tasks', ['description'=> $action['description'], 'task_id' => $action['id']] );
-        Container::get('database')->update('tasks', ['completed'=> $action['completed'], 'task_id' => $action['id']] );
-        Container::get('database')->update('tasks', ['user_id'=> $action['assigned'], 'task_id' => $action['id']] );
-
+        TaskRepository::edit($data['id'],['description'=> $data['description']]);
+        TaskRepository::edit($data['id'],['completed'=> $data['completed']]);
+        TaskRepository::edit($data['id'],['user_id'=> $data['assigned']]);
     }
 
-    public static function delete ($id)
+    public static function delete ($task_id)
     {
-        $task = Task::find($id);
-        $description = $task->description;
-        Container::get('database')->delete('tasks', compact('description'));
+        TaskRepository::delete($task_id);
     }
 
     public static function update ($user_id)
     {
-        $assigned_tasks = self::myTasks($user_id);
+        $assigned_tasks = TaskRepository::myTasks($user_id);
         foreach ($assigned_tasks as $assigned_task)
         {
-            Container::get('database')->update('tasks', ['user_id'=> null, 'task_id' => $assigned_task->task_id] );
+            $parameters = [
+                'user_id' => null,
+                'task_id' => $assigned_task->task_id,
+            ];
+            TaskRepository::update($parameters);
+            //Container::get('database')->update('tasks', ['user_id'=> null, 'task_id' => $assigned_task->task_id] );
         }
     }
 
-    public static function myTasks($user_id)
-    {
-        return Container::get('database')->search('tasks', 'user_id', compact('user_id'));
-    }
+
 }

@@ -82,9 +82,6 @@ class TaskController
             redirect('store');
         }
         Task::delete($data);
-        //$users = User::all();
-        //$tasks = Task::all();
         redirect('store');
-        //return view('store', compact('users', 'tasks','loginUser'));
     }
 }

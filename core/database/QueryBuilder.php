@@ -54,24 +54,6 @@ class QueryBuilder
         }
 
     }
-    public function latestId()
-    {
-
-        $sql = 'select last_insert_id()';
-        //die(var_dump($sql, $parameters));
-        try {
-
-            $this->statement = $this->pdo->prepare($sql);
-            return $this->statement->execute();
-
-
-        } catch (Exception $e) {
-
-            die("Whoops, something went wrong".  $e);
-        }
-
-    }
-
     public function search($table, $name, $value)
     {
         $sql = sprintf(

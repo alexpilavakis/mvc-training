@@ -34,14 +34,16 @@
                         <a class="nav-link" href="javascript:DoPost('myTasks')">My Tasks</a>
                     </form>
                 </li>
-                <li class="nav-item">
+            <?php endif; ?>
+            <?php if($loginUser->canDo('assign')) : ?>
+            <li class="nav-item">
                     <form method="GET" id="theForm2" action="/assign-task">
                         <a class="nav-link" href="javascript:DoPost('theForm2')">Assign Task</a>
                     </form>
 
                 </li>
             <?php endif; ?>
-            <?php if($loginUser->isAdmin()) : ?>
+            <?php if($loginUser->canDo('add')) : ?>
                 <li class="nav-item">
                     <form method="GET" id="theForm3" action="/Task/add">
                         <a class="nav-link" href="javascript:DoPost('theForm3')">Add Task</a>
@@ -52,6 +54,8 @@
                         <a class="nav-link" href="javascript:DoPost('theForm4')">Add User</a>
                     </form>
                 </li>
+            <?php endif; ?>
+            <?php if($loginUser->canDo('edit')) : ?>
                 <li class="nav-item">
                     <form method="GET" id="edittask" action="/Task/edit">
                         <a class="nav-link" href="javascript:DoPost('edittask')">Edit Task</a>

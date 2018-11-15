@@ -7,6 +7,7 @@
  */
 
 namespace MVCTraining\app\models;
+use MVCTraining\app\repositories\UserRepository;
 use MVCTraining\core\Container;
 
 
@@ -25,13 +26,6 @@ class Admin extends User
             'password' => $password,
             'role_id' => $role_id
         ];
-        return Container::get('database')->insert('users', $parameters);
-    }
-    public function allAdmins()
-    {
-        $admins = Container::get('database')->selectAll("admin");
-        array_map(function ($admin){
-            return self::find($admin->user_id);
-        }, $admins);
+        return UserRepository::insert($parameters);
     }
 }
